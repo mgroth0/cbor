@@ -241,3 +241,5 @@ private fun InputStream.readLong(): Long {
   }
   return result
 }
+
+fun iDoUseCborLibButOnlyInlineOrConst() = println("iDoUseCborLibButOnlyInlineOrConst")
