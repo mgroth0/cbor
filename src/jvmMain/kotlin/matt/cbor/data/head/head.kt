@@ -1,6 +1,8 @@
 package matt.cbor.data.head
 
 import matt.cbor.data.major.MajorType
+import matt.cbor.data.major.MajorType.ARRAY
+import matt.cbor.read.head.CBOR_UNLIMITED_COUNT
 
 interface HasInitialByte {
   val majorType: MajorType
@@ -16,6 +18,8 @@ class InitialByte(
 	majorType = MajorType.values()[initialByte shr 5],
 	argumentCode = (initialByte and 0b000_11111).toByte()
   )
+
+  fun toByte() = ((majorType.ordinal shl 5) and argumentCode.toInt()).toByte()
 }
 
 class HeadWithArgument(
@@ -29,3 +33,8 @@ fun predictHeadSizeForCount(count: Int) = when {
   count <= 65_535 -> 1 + 2
   else            -> 1 + 4
 } + count
+
+
+val CBOR_UNLIMITED_ARRAY_INITIAL_BYTE by lazy {
+  InitialByte(ARRAY, CBOR_UNLIMITED_COUNT.toByte()).toByte()
+}

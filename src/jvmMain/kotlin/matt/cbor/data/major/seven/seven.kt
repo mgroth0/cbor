@@ -16,6 +16,6 @@ class CborDouble(val value: Double): CborFloatOrSimpleValue
 
 /*"not a data item"*/
 object Break {
-  const val int = 255
-  val byte = int.toByte()
+  val int = 255.toUInt()
+  val byte = int.toUByte()
 }

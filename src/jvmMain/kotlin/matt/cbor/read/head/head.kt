@@ -15,14 +15,16 @@ class HeadReader(private val initialByte: InitialByte): CborReaderTyped<HeadWith
 	require(!didRead)
 	didRead = true
 	return when (initialByte.argumentCode.toInt()) {
-	  in lt(24)  -> HeadWithArgument(initialByte)
-	  24         -> HeadWithArgument(initialByte, readNBytes(1))
-	  25         -> HeadWithArgument(initialByte, readNBytes(2))
-	  26         -> HeadWithArgument(initialByte, readNBytes(4))
-	  27         -> HeadWithArgument(initialByte, readNBytes(8))
-	  28, 29, 30 -> NOT_WELL_FORMED
-	  31         -> HeadWithArgument(initialByte)
-	  else       -> PARSER_BUG
+	  in lt(24)            -> HeadWithArgument(initialByte)
+	  24                   -> HeadWithArgument(initialByte, readNBytes(1))
+	  25                   -> HeadWithArgument(initialByte, readNBytes(2))
+	  26                   -> HeadWithArgument(initialByte, readNBytes(4))
+	  27                   -> HeadWithArgument(initialByte, readNBytes(8))
+	  28, 29, 30           -> NOT_WELL_FORMED
+	  CBOR_UNLIMITED_COUNT -> HeadWithArgument(initialByte)
+	  else                 -> PARSER_BUG
 	}
   }
 }
+
+const val CBOR_UNLIMITED_COUNT = 31
