@@ -7,6 +7,6 @@ import matt.cbor.read.major.IntArgTypeReader
 
 class TagReader(head: HeadWithArgument): IntArgTypeReader<CborTag>(head) {
   override fun read(): CborTag {
-	return CborTag(tagValue = argumentValue!!, content = CborItemReader().withStream { read() })
+	return CborTag(tagValue = argumentValue!!, content = lendStream(CborItemReader()) { read() })
   }
 }

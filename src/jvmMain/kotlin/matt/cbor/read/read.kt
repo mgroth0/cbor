@@ -26,7 +26,7 @@ abstract class CborReaderTyped<R> {
 	println("${reader}.streamMan5 = $streamMan")
   }
 
-  protected fun <RR, C: CborReader> withStream(reader: C, op: C.()->RR): RR {
+  protected fun <RR, C: CborReader> lendStream(reader: C, op: C.()->RR): RR {
 	println("${this}.streamMan6 = $streamMan")
 	println("${reader}.streamMan7 = $streamMan")
 	transferStreamTo(reader)

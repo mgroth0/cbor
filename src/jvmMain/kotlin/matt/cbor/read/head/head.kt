@@ -6,7 +6,7 @@ import matt.cbor.err.NOT_WELL_FORMED
 import matt.cbor.err.PARSER_BUG
 import matt.cbor.read.CborReadResult
 import matt.cbor.read.CborReaderTyped
-import matt.lang.whenlang.lt
+import matt.lang.pattern.lt
 
 /*https://www.rfc-editor.org/rfc/rfc8949.html#section-3*/
 class HeadReader(private val initialByte: InitialByte): CborReaderTyped<HeadWithArgument>(), CborReadResult {

@@ -10,8 +10,8 @@ class CborItemReader: CborReaderTyped<CborDataItem>() {
   override fun read(): CborDataItem {
 	val initialByte = InitialByte(readByte())
 	val headReader = HeadReader(initialByte)
-	val head = headReader.withStream { read() }
-	return head.majorType.reader(head).withStream {
+	val head = lendStream(headReader) { read() }
+	return lendStream(head.majorType.reader(head)) {
 	  read()
 	}
   }

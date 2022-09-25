@@ -9,7 +9,7 @@ class ArrayReader(head: HeadWithArgument): IntArgTypeReader<CborArray>(head) {
   override fun read(): CborArray {
 	return argumentValue?.let { len ->
 	  CborArray((0.toULong()..len).map {
-		CborItemReader().withStream {
+		lendStream(CborItemReader()) {
 		  read()
 		}
 	  })

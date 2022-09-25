@@ -9,7 +9,7 @@ class MapReader(head: HeadWithArgument): IntArgTypeReader<CborMap>(head) {
   override fun read(): CborMap {
 	return argumentValue?.let { len ->
 	  CborMap((0.toULong()..len).associate {
-		CborItemReader().withStream {
+		lendStream(CborItemReader()) {
 		  read() to read()
 		}
 	  })
