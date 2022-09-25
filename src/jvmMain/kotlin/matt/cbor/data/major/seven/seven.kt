@@ -4,14 +4,27 @@ import matt.cbor.data.major.CborDataItem
 
 sealed interface CborFloatOrSimpleValue: CborDataItem
 
-abstract class CborBoolean(val value: Boolean): CborFloatOrSimpleValue
+abstract class CborBoolean(val value: Boolean): CborFloatOrSimpleValue {
+  override fun info() = value.toString()
+}
+
 object CborFalse: CborBoolean(false)
 object CborTrue: CborBoolean(true)
-object CborUndefined: CborFloatOrSimpleValue
-object CborNull: CborFloatOrSimpleValue
+object CborUndefined: CborFloatOrSimpleValue {
+  override fun info() = "undefined"
+}
 
-class CborFloat(val value: Float): CborFloatOrSimpleValue
-class CborDouble(val value: Double): CborFloatOrSimpleValue
+object CborNull: CborFloatOrSimpleValue {
+  override fun info() = "null"
+}
+
+class CborFloat(val value: Float): CborFloatOrSimpleValue {
+  override fun info() = value.toString()
+}
+
+class CborDouble(val value: Double): CborFloatOrSimpleValue {
+  override fun info() = value.toString()
+}
 
 
 /*"not a data item"*/

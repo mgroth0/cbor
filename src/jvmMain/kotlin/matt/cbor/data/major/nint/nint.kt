@@ -7,4 +7,5 @@ import matt.cbor.data.major.CborDataItem
 /*probably will never use this anyway*/
 class CborNegInt(private val argumentValue: ULong): CborDataItem {
   private val realValue by lazy { "1 - $argumentValue" }
+  override fun info() = realValue.toString()
 }

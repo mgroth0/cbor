@@ -7,9 +7,9 @@ import matt.cbor.read.major.IntArgTypeReader
 
 class ArrayReader(head: HeadWithArgument): IntArgTypeReader<CborArray>(head) {
   override fun read(): CborArray {
-	return argumentValue?.let { len ->
-	  CborArray((0.toULong()..len).map {
-		lendStream(CborItemReader()) {
+	return argumentValue?.let {
+	  CborArray(range.map {
+		lendStream(CborItemReader().also { it.indent = indent + 1 }) {
 		  read()
 		}
 	  })

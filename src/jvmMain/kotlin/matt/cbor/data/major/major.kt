@@ -11,20 +11,21 @@ import matt.cbor.read.major.seven.SpecialOrFloatReader
 import matt.cbor.read.major.tag.TagReader
 import matt.cbor.read.major.txtstr.TextStringReader
 import matt.cbor.read.major.uint.PosOrUIntReader
+import matt.model.info.HasInfo
 import kotlin.reflect.KClass
 
-interface CborDataItem: CborReadResult
+interface CborDataItem: CborReadResult, HasInfo
 
 /*https://www.rfc-editor.org/rfc/rfc8949.html#name-major-types*/
-enum class MajorType(private val readerCls: KClass<out MajorTypeReader<*>>) {
-  POS_OR_U_INT(PosOrUIntReader::class),
-  N_INT(NegIntReader::class),
-  BYTE_STRING(ByteStringReader::class),
-  TEXT_STRING(TextStringReader::class),
-  ARRAY(ArrayReader::class),
-  MAP(MapReader::class),
-  TAG(TagReader::class),
-  SPECIAL_OR_FLOAT(SpecialOrFloatReader::class);
+enum class MajorType(private val readerCls: KClass<out MajorTypeReader<*>>, val label: String) {
+  POS_OR_U_INT(PosOrUIntReader::class, "int"),
+  N_INT(NegIntReader::class, "-int"),
+  BYTE_STRING(ByteStringReader::class, "bytes"),
+  TEXT_STRING(TextStringReader::class, "text"),
+  ARRAY(ArrayReader::class, "array"),
+  MAP(MapReader::class, "map"),
+  TAG(TagReader::class, "tag"),
+  SPECIAL_OR_FLOAT(SpecialOrFloatReader::class, "special/float");
 
   fun reader(headWithArgument: HeadWithArgument): MajorTypeReader<*> {
 	return readerCls.constructors.first().call(headWithArgument)

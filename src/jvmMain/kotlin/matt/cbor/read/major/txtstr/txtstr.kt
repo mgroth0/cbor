@@ -6,8 +6,8 @@ import matt.cbor.read.major.IntArgTypeReader
 
 class TextStringReader(head: HeadWithArgument): IntArgTypeReader<CborTextString>(head) {
   override fun read(): CborTextString {
-	return argumentValue?.let { len ->
-	  CborTextString(readNBytes(len).decodeToString())
+	return argumentValue?.let {
+	  CborTextString(readNBytes(count).decodeToString())
 	} ?: run {
 
 	  /*https://www.rfc-editor.org/rfc/rfc8949.html#section-3.2.3*/

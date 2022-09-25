@@ -7,9 +7,9 @@ import matt.cbor.read.major.IntArgTypeReader
 
 class MapReader(head: HeadWithArgument): IntArgTypeReader<CborMap>(head) {
   override fun read(): CborMap {
-	return argumentValue?.let { len ->
-	  CborMap((0.toULong()..len).associate {
-		lendStream(CborItemReader()) {
+	return argumentValue?.let {
+	  CborMap((range).associate {
+		lendStream(CborItemReader().also { it.indent = indent + 1 }) {
 		  read() to read()
 		}
 	  })

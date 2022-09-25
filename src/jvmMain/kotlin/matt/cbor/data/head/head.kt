@@ -3,6 +3,7 @@ package matt.cbor.data.head
 import matt.cbor.data.major.MajorType
 import matt.cbor.data.major.MajorType.ARRAY
 import matt.cbor.read.head.CBOR_UNLIMITED_COUNT
+import matt.model.info.HasInfo
 
 interface HasInitialByte {
   val majorType: MajorType
@@ -25,7 +26,17 @@ class InitialByte(
 class HeadWithArgument(
   val initialByte: InitialByte,
   val extraBytes: ByteArray? = null
-): HasInitialByte by initialByte
+): HasInitialByte by initialByte, HasInfo {
+  override fun info() = "${majorType.label}($argumentCode${
+	extraBytes?.let {
+	  " + ${
+		it.joinToString(prefix = "[", postfix = "]") {
+		  it.toInt().toString()
+		}
+	  }"
+	} ?: ""
+  })"
+}
 
 fun predictHeadSizeForCount(count: Int) = when {
   count <= 23     -> 1 + 0
