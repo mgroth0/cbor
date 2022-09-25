@@ -5,6 +5,10 @@
             "type": "matt.mstruct.bj.BuildJsonLibDependency",
             "cfg": "commonMainApi",
             "key": "kt-stdlib"
+        },{
+            "type" : "matt.mstruct.bj.BuildJsonProjectDependency",
+            "cfg" :  "commonMainImplementation",
+            "path" : ":k:stream"
         }
     ]
 }
