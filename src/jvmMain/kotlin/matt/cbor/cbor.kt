@@ -246,6 +246,10 @@ class CborArrayReader(
   fun readSetSizeFloat32Array(): List<Float> {
 	return (0 until length!!).map {
 	  stream.stream.skipNBytes(1)
+//	  val x = stream.stream.read()
+//	  require(x == 0b10111010) {
+//		"expected 0b10111010 but got $x"
+//	  }
 	  ByteBuffer.wrap(stream.stream.readNBytes(4)).float
 	}
   }
