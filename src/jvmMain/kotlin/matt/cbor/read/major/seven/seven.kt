@@ -14,8 +14,8 @@ import matt.cbor.read.major.MajorTypeReader
 import java.nio.ByteBuffer
 
 /*https://www.rfc-editor.org/rfc/rfc8949.html#name-floating-point-numbers-and-*/
-class SpecialOrFloatReader(head: HeadWithArgument): MajorTypeReader<CborFloatOrSimpleValue>(head) {
-  override fun read(): CborFloatOrSimpleValue {
+class SpecialOrFloatReader(head: HeadWithArgument): MajorTypeReader<CborFloatOrSimpleValue<*>>(head) {
+  override fun readImpl(): CborFloatOrSimpleValue<*> {
 	return when {
 	  head.argumentCode <= 19 -> TODO()
 	  else                    -> when (head.argumentCode.toInt()) {

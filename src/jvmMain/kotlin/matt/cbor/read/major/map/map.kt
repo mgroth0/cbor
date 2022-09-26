@@ -6,10 +6,11 @@ import matt.cbor.data.major.map.CborMap
 import matt.cbor.read.major.IntArgTypeReader
 import matt.cbor.read.major.MajorTypeReader
 
-class MapReader(head: HeadWithArgument): IntArgTypeReader<CborMap>(head) {
-  override fun readImpl(): CborMap {
+class MapReader(head: HeadWithArgument): IntArgTypeReader<CborMap<*, *>>(head) {
+  override fun readImpl(): CborMap<Any?, Any?> {
 	return argumentValue?.let {
-	  CborMap((range).associate { next() })
+	  val data = (range).associate { next() }
+	  CborMap(data)
 	} ?: run {
 	  TODO()
 	}
@@ -25,12 +26,12 @@ class MapReader(head: HeadWithArgument): IntArgTypeReader<CborMap>(head) {
 	return n.second.raw as T
   }
 
-  inline fun <reified RD: MajorTypeReader<*>> nextValueManual(
+  inline fun <reified RD: MajorTypeReader<*>, R> nextValueManual(
 	requireKeyIs: Any,
-	op: RD.()->Unit
+	op: RD.()->R
   ) = lendStream(CborItemReader(), andIndent = true) {
 	val k = read()
 	require(k.raw == requireKeyIs)
-	val v = readManually<RD> { op() }
+	val v = readManually<RD, R> { op() }
   }
 }

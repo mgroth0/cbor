@@ -7,7 +7,7 @@ import matt.stream.readOrNullIfEOF
 import java.io.BufferedInputStream
 import java.io.InputStream
 
-fun InputStream.readCbor(): CborDataItem {
+fun InputStream.readCbor(): CborDataItem<*> {
   val reader = cborReader()
   val item = reader.read()
   close()

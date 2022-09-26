@@ -1,29 +1,34 @@
 package matt.cbor.data.major.seven
 
 import matt.cbor.data.major.CborDataItem
+import matt.lang.Undefined
 
-sealed interface CborFloatOrSimpleValue: CborDataItem
+sealed interface CborFloatOrSimpleValue<T>: CborDataItem<T>
 
-abstract class CborBoolean(val value: Boolean): CborFloatOrSimpleValue {
-  override fun info() = value.toString()
+abstract class CborBoolean(override val raw: Boolean): CborFloatOrSimpleValue<Boolean> {
+  override fun info() = raw.toString()
 }
 
 object CborFalse: CborBoolean(false)
 object CborTrue: CborBoolean(true)
-object CborUndefined: CborFloatOrSimpleValue {
+
+
+object CborUndefined: CborFloatOrSimpleValue<Undefined> {
   override fun info() = "undefined"
+  override val raw = Undefined
 }
 
-object CborNull: CborFloatOrSimpleValue {
+object CborNull: CborFloatOrSimpleValue<Any?> {
+  override val raw = null
   override fun info() = "null"
 }
 
-class CborFloat(val value: Float): CborFloatOrSimpleValue {
-  override fun info() = value.toString()
+class CborFloat(override val raw: Float): CborFloatOrSimpleValue<Float> {
+  override fun info() = raw.toString()
 }
 
-class CborDouble(val value: Double): CborFloatOrSimpleValue {
-  override fun info() = value.toString()
+class CborDouble(override val raw: Double): CborFloatOrSimpleValue<Double> {
+  override fun info() = raw.toString()
 }
 
 

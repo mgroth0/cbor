@@ -5,7 +5,7 @@ import matt.cbor.data.major.txtstr.CborTextString
 import matt.cbor.read.major.IntArgTypeReader
 
 class TextStringReader(head: HeadWithArgument): IntArgTypeReader<CborTextString>(head) {
-  override fun read(): CborTextString {
+  override fun readImpl(): CborTextString {
 	return argumentValue?.let {
 	  CborTextString(readNBytes(count).decodeToString())
 	} ?: run {

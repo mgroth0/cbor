@@ -4,14 +4,13 @@ import matt.cbor.data.head.HeadWithArgument
 import matt.cbor.data.head.InitialByte
 import matt.cbor.err.NOT_WELL_FORMED
 import matt.cbor.err.PARSER_BUG
-import matt.cbor.read.CborReadResult
 import matt.cbor.read.CborReaderTyped
 import matt.lang.pattern.lt
 
 /*https://www.rfc-editor.org/rfc/rfc8949.html#section-3*/
-class HeadReader(private val initialByte: InitialByte): CborReaderTyped<HeadWithArgument>(), CborReadResult {
+class HeadReader(private val initialByte: InitialByte): CborReaderTyped<HeadWithArgument>() {
   private var didRead = false
-  override fun read(): HeadWithArgument {
+  override fun readImpl(): HeadWithArgument {
 	require(!didRead)
 	didRead = true
 	return when (initialByte.argumentCode.toInt()) {
@@ -25,6 +24,7 @@ class HeadReader(private val initialByte: InitialByte): CborReaderTyped<HeadWith
 	  else                 -> PARSER_BUG
 	}
   }
+
 }
 
 const val CBOR_UNLIMITED_COUNT = 31

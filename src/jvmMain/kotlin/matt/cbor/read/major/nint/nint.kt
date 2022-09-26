@@ -5,7 +5,7 @@ import matt.cbor.data.major.nint.CborNegInt
 import matt.cbor.read.major.IntArgTypeReader
 
 class NegIntReader(head: HeadWithArgument): IntArgTypeReader<CborNegInt>(head) {
-  override fun read(): CborNegInt {
+  override fun readImpl(): CborNegInt {
 	return CborNegInt(argumentValue = count)
   }
 }

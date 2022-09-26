@@ -5,7 +5,7 @@ import matt.cbor.data.major.uint.CborUInt
 import matt.cbor.read.major.IntArgTypeReader
 
 class PosOrUIntReader(head: HeadWithArgument): IntArgTypeReader<CborUInt>(head) {
-  override fun read(): CborUInt {
-	return CborUInt(value = count)
+  override fun readImpl(): CborUInt {
+	return CborUInt(raw = count)
   }
 }
