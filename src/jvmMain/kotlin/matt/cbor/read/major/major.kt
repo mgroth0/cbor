@@ -8,9 +8,9 @@ import matt.cbor.read.CborReaderTyped
 import java.nio.ByteBuffer
 
 
-abstract class MajorTypeReader<D: CborDataItem>(protected val head: HeadWithArgument): CborReaderTyped<D>()
+abstract class MajorTypeReader<D: CborDataItem<*>>(val head: HeadWithArgument): CborReaderTyped<D>()
 
-abstract class IntArgTypeReader<D: CborDataItem>(head: HeadWithArgument): MajorTypeReader<D>(head) {
+abstract class IntArgTypeReader<D: CborDataItem<*>>(head: HeadWithArgument): MajorTypeReader<D>(head) {
   val argumentValue = when {
 	head.argumentCode < 24 -> head.argumentCode.toUByte()
 	else                   -> when (head.argumentCode.toInt()) {
@@ -23,6 +23,7 @@ abstract class IntArgTypeReader<D: CborDataItem>(head: HeadWithArgument): MajorT
 	  else       -> PARSER_BUG
 	}
   }
+  val hasCount = argumentValue != null
   val count by lazy {
 	when (argumentValue) {
 	  is ULong  -> 0L.toULong() + argumentValue
@@ -32,7 +33,6 @@ abstract class IntArgTypeReader<D: CborDataItem>(head: HeadWithArgument): MajorT
 	  is Byte   -> 0b0.toULong() + argumentValue.toUByte()
 	  else      -> PARSER_BUG
 	}
-
   }
   val range by lazy {
 	0L.toULong() until count

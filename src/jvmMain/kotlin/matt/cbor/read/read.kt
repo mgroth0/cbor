@@ -1,24 +1,38 @@
 package matt.cbor.read
 
+import matt.cbor.log.INDENT
 import matt.cbor.read.streamman.CborStreamManager
 import matt.log.Logger
+import matt.model.info.HasInfo
+import matt.prim.str.times
+import kotlin.contracts.contract
 
-interface CborReadResult
-object EOF: CborReadResult
+interface CborReadResult: HasInfo
+
+object EOF: CborReadResult {
+  override fun info() = "EOF"
+}
 
 typealias CborReader = CborReaderTyped<*>
 
-abstract class CborReaderTyped<R> {
+abstract class CborReaderTyped<R: CborReadResult> {
 
   companion object {
 	var defaultLogger: Logger? = null
   }
 
-  internal var indent = 0
+  protected var indent = 0
+  @PublishedApi internal fun setIndentOf(reader: CborReader) {
+	reader.indent = indent + 1
+  }
 
   var logger: Logger? = defaultLogger
 
-  abstract fun read(): R
+  open fun read(): R = readImpl().also {
+	logger?.plusAssign(INDENT*indent + it.info())
+  }
+
+  protected abstract fun readImpl(): R
   private var streamMan: CborStreamManager? = null
   fun initStreamMan(newStreamMan: CborStreamManager) {
 	require(!newStreamMan.isInitialized)
@@ -26,13 +40,23 @@ abstract class CborReaderTyped<R> {
 	streamMan = newStreamMan
   }
 
-  protected fun transferStreamTo(reader: CborReaderTyped<*>) {
+  @PublishedApi internal fun transferStreamTo(reader: CborReaderTyped<*>) {
 	reader.streamMan = streamMan!!
 	streamMan = null
   }
 
-  protected fun <RR, C: CborReader> lendStream(reader: C, op: C.()->RR): RR {
+  @PublishedApi internal inline fun <RR, C: CborReader> lendStream(
+	reader: C,
+	andIndent: Boolean = false,
+	op: C .()->RR
+  ): RR {
+	contract {
+	  callsInPlace(op, kotlin.contracts.InvocationKind.EXACTLY_ONCE)
+	}
 	transferStreamTo(reader)
+	if (andIndent) {
+	  setIndentOf(reader)
+	}
 	val r = reader.op()
 	reader.transferStreamTo(this)
 	return r

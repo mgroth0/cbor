@@ -36,6 +36,8 @@ class HeadWithArgument(
 	  }"
 	} ?: ""
   })"
+
+  val numBytes = 1 + (extraBytes?.size ?: 0)
 }
 
 fun predictHeadSizeForCount(count: Int) = when {

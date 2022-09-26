@@ -14,7 +14,9 @@ import matt.cbor.read.major.uint.PosOrUIntReader
 import matt.model.info.HasInfo
 import kotlin.reflect.KClass
 
-interface CborDataItem: CborReadResult, HasInfo
+interface CborDataItem<T>: CborReadResult, HasInfo {
+  val raw: T
+}
 
 /*https://www.rfc-editor.org/rfc/rfc8949.html#name-major-types*/
 enum class MajorType(private val readerCls: KClass<out MajorTypeReader<*>>, val label: String) {

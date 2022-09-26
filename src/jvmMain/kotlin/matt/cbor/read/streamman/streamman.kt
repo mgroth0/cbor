@@ -14,8 +14,8 @@ fun InputStream.readCbor(): CborDataItem {
   return item
 }
 
-/*doesn't close stream*/
-internal fun InputStream.cborReader(): CborItemReader {
+
+fun InputStream.cborReader(): CborItemReader {
   val man = CborStreamManager(this)
   val itemReader = CborItemReader()
   itemReader.initStreamMan(man)
