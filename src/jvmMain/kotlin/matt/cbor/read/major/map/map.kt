@@ -32,6 +32,6 @@ class MapReader(head: HeadWithArgument): IntArgTypeReader<CborMap<*, *>>(head) {
   ) = lendStream(CborItemReader(), andIndent = true) {
 	val k = read()
 	require(k.raw == requireKeyIs)
-	val v = readManually<RD, R> { op() }
+	readManually<RD, R> { op() }
   }
 }
