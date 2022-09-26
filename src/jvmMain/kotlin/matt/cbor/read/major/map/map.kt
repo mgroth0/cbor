@@ -20,6 +20,11 @@ class MapReader(head: HeadWithArgument): IntArgTypeReader<CborMap<*, *>>(head) {
 	read() to read()
   }
 
+  inline fun <reified T> nextKeyOnly() = lendStream(CborItemReader(), andIndent = true) {
+	read().raw as T
+  }
+
+
   inline fun <reified T> nextValue(requireKeyIs: Any): T {
 	val n = next()
 	require(n.first.raw == requireKeyIs)
