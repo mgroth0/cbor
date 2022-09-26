@@ -38,7 +38,14 @@ class MapReader(head: HeadWithArgument): IntArgTypeReader<CborMap<*, *>>(head) {
 	op: RD.()->R
   ) = lendStream(CborItemReader()) {
 	val k = read()
-	require(k.raw == requireKeyIs)
+	require(k.raw == requireKeyIs) {
+	  "expected key \"${requireKeyIs}\" but got key ${k.raw}"
+	}
 	readManually<RD, R> { op() }
   }
+
+
+
+
+
 }

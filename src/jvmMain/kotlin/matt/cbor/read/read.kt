@@ -62,7 +62,7 @@ abstract class CborReaderTyped<R: CborReadResult> {
   }
 
   protected fun readByte() = streamMan!!.read().also { require(it > -1) }
-  protected fun readNBytes(len: Int) = streamMan!!.readNBytes(len)
+  fun readNBytes(len: Int) = streamMan!!.readNBytes(len)
   protected fun readNBytes(len: ULong): ByteArray {
 	require(len <= Int.MAX_VALUE.toUInt())
 	return readNBytes(len.toInt())
