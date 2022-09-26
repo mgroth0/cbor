@@ -2,10 +2,20 @@ package matt.cbor.read.head
 
 import matt.cbor.data.head.HeadWithArgument
 import matt.cbor.data.head.InitialByte
+import matt.cbor.data.major.MajorType.ARRAY
+import matt.cbor.data.major.MajorType.BYTE_STRING
+import matt.cbor.data.major.MajorType.MAP
+import matt.cbor.data.major.MajorType.N_INT
+import matt.cbor.data.major.MajorType.POS_OR_U_INT
+import matt.cbor.data.major.MajorType.SPECIAL_OR_FLOAT
+import matt.cbor.data.major.MajorType.TAG
+import matt.cbor.data.major.MajorType.TEXT_STRING
 import matt.cbor.err.NOT_WELL_FORMED
 import matt.cbor.err.PARSER_BUG
+import matt.cbor.log.INDENT
 import matt.cbor.read.CborReaderTyped
 import matt.lang.pattern.lt
+import matt.prim.str.times
 
 /*https://www.rfc-editor.org/rfc/rfc8949.html#section-3*/
 class HeadReader(private val initialByte: InitialByte): CborReaderTyped<HeadWithArgument>() {
@@ -25,6 +35,20 @@ class HeadReader(private val initialByte: InitialByte): CborReaderTyped<HeadWith
 	}
   }
 
+  override fun printReadInfo(r: HeadWithArgument) {
+	val anno = INDENT*(indent - 1) + r.info()
+	when (initialByte.majorType) {
+	  POS_OR_U_INT,
+	  N_INT,
+	  BYTE_STRING,
+	  TEXT_STRING,
+	  TAG,
+	  SPECIAL_OR_FLOAT -> logger?.printNoNewline("$anno: ")
+
+	  ARRAY, MAP       -> logger?.log(anno)
+
+	}
+  }
 }
 
 const val CBOR_UNLIMITED_COUNT = 31

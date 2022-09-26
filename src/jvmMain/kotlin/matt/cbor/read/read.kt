@@ -5,6 +5,7 @@ import matt.cbor.read.streamman.CborStreamManager
 import matt.log.Logger
 import matt.model.info.HasInfo
 import matt.prim.str.times
+import matt.prim.str.truncateWithElipses
 import kotlin.contracts.contract
 
 interface CborReadResult: HasInfo
@@ -21,15 +22,16 @@ abstract class CborReaderTyped<R: CborReadResult> {
 	var defaultLogger: Logger? = null
   }
 
-  protected var indent = 0
-  @PublishedApi internal fun setIndentOf(reader: CborReader) {
-	reader.indent = indent + 1
-  }
+  @PublishedApi
+  internal var indent = 0
+
 
   var logger: Logger? = defaultLogger
 
+  open fun printReadInfo(r: R) = logger?.log(INDENT*(indent-1) + r.info().truncateWithElipses(25))
+
   open fun read(): R = readImpl().also {
-	logger?.plusAssign(INDENT*indent + it.info())
+	printReadInfo(it)
   }
 
   protected abstract fun readImpl(): R
@@ -47,16 +49,13 @@ abstract class CborReaderTyped<R: CborReadResult> {
 
   @PublishedApi internal inline fun <RR, C: CborReader> lendStream(
 	reader: C,
-	andIndent: Boolean = false,
 	op: C .()->RR
   ): RR {
 	contract {
 	  callsInPlace(op, kotlin.contracts.InvocationKind.EXACTLY_ONCE)
 	}
 	transferStreamTo(reader)
-	if (andIndent) {
-	  setIndentOf(reader)
-	}
+	reader.indent = indent + 1
 	val r = reader.op()
 	reader.transferStreamTo(this)
 	return r

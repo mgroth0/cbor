@@ -27,6 +27,7 @@ class HeadWithArgument(
   val initialByte: InitialByte,
   val extraBytes: ByteArray? = null
 ): HasInitialByte by initialByte, CborReadResult {
+
   override fun info() = "${majorType.label}($argumentCode${
 	extraBytes?.let {
 	  " + ${

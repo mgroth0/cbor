@@ -16,11 +16,13 @@ class MapReader(head: HeadWithArgument): IntArgTypeReader<CborMap<*, *>>(head) {
 	}
   }
 
-  fun next() = lendStream(CborItemReader(), andIndent = true) {
-	read() to read()
+  fun next() = lendStream(CborItemReader()) {
+	read() to run {
+	  read()
+	}
   }
 
-  inline fun <reified T> nextKeyOnly() = lendStream(CborItemReader(), andIndent = true) {
+  inline fun <reified T> nextKeyOnly() = lendStream(CborItemReader()) {
 	read().raw as T
   }
 
@@ -34,7 +36,7 @@ class MapReader(head: HeadWithArgument): IntArgTypeReader<CborMap<*, *>>(head) {
   inline fun <reified RD: MajorTypeReader<*>, R> nextValueManual(
 	requireKeyIs: Any,
 	op: RD.()->R
-  ) = lendStream(CborItemReader(), andIndent = true) {
+  ) = lendStream(CborItemReader()) {
 	val k = read()
 	require(k.raw == requireKeyIs)
 	readManually<RD, R> { op() }

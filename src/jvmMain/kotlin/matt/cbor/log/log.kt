@@ -1,3 +1,3 @@
 package matt.cbor.log
 
-internal val INDENT = "\t"
+internal const val INDENT = "\t"

@@ -10,7 +10,7 @@ class ArrayReader(head: HeadWithArgument): IntArgTypeReader<CborArray<*>>(head) 
   override fun readImpl(): CborArray<*> {
 	return argumentValue?.let {
 	  CborArray(range.map {
-		lendStream(CborItemReader(), andIndent = true) {
+		lendStream(CborItemReader()) {
 		  read()
 		}
 	  })
@@ -19,14 +19,14 @@ class ArrayReader(head: HeadWithArgument): IntArgTypeReader<CborArray<*>>(head) 
 	}
   }
 
-  inline fun <reified Raw, R> readEach(op: (Raw) -> R) = range.map {
-	lendStream(CborItemReader(), andIndent = true) {
+  inline fun <reified Raw, R> readEach(op: (Raw)->R) = range.map {
+	lendStream(CborItemReader()) {
 	  op(read().raw as Raw)
 	}
   }
 
   inline fun <reified RD: MajorTypeReader<*>, R> readEachManually(op: RD.()->R) = range.map {
-	lendStream(CborItemReader(), andIndent = true) {
+	lendStream(CborItemReader()) {
 	  readManually<RD, R> { op() }
 	}
   }
