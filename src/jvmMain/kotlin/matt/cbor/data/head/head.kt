@@ -20,7 +20,7 @@ class InitialByte(
 	argumentCode = (initialByte and 0b000_11111).toByte()
   )
 
-  fun toByte() = ((majorType.ordinal shl 5) and argumentCode.toInt()).toByte()
+  fun toByte() = ((majorType.ordinal shl 5) or argumentCode.toInt()).toByte()
 }
 
 class HeadWithArgument(
