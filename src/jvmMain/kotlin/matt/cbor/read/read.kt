@@ -2,7 +2,7 @@ package matt.cbor.read
 
 import matt.cbor.log.INDENT
 import matt.cbor.read.streamman.CborStreamManager
-import matt.log.Logger
+import matt.log.logger.Logger
 import matt.model.info.HasInfo
 import matt.prim.str.times
 import matt.prim.str.truncateWithElipses
