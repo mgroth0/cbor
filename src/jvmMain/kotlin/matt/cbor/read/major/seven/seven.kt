@@ -10,6 +10,7 @@ import matt.cbor.data.major.seven.CborTrue
 import matt.cbor.data.major.seven.CborUndefined
 import matt.cbor.err.NOT_WELL_FORMED
 import matt.cbor.err.PARSER_BUG
+import matt.cbor.read.CborReadResultWithBytes
 import matt.cbor.read.major.MajorTypeReader
 import java.nio.ByteBuffer
 
@@ -32,5 +33,8 @@ class SpecialOrFloatReader(head: HeadWithArgument): MajorTypeReader<CborFloatOrS
 		else       -> PARSER_BUG
 	  }
 	}
+  }
+  override fun readAndStoreBytes(): CborReadResultWithBytes<CborFloatOrSimpleValue<*>> {
+	return CborReadResultWithBytes(readImpl(), byteArrayOf())
   }
 }

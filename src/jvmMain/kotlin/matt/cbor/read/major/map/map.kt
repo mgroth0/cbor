@@ -3,6 +3,7 @@ package matt.cbor.read.major.map
 import matt.cbor.CborItemReader
 import matt.cbor.data.head.HeadWithArgument
 import matt.cbor.data.major.map.CborMap
+import matt.cbor.read.CborReadResultWithBytes
 import matt.cbor.read.major.IntArgTypeReader
 import matt.cbor.read.major.MajorTypeReader
 
@@ -33,6 +34,7 @@ class MapReader(head: HeadWithArgument): IntArgTypeReader<CborMap<*, *>>(head) {
 	return n.second.raw as T
   }
 
+
   inline fun <reified RD: MajorTypeReader<*>, R> nextValueManual(
 	requireKeyIs: Any,
 	op: RD.()->R
@@ -44,8 +46,36 @@ class MapReader(head: HeadWithArgument): IntArgTypeReader<CborMap<*, *>>(head) {
 	readManually<RD, R> { op() }
   }
 
+  inline fun <reified RD: MajorTypeReader<*>, R> nextValueManualDontReadKey(
+	op: RD.()->R
+  ) = lendStream(CborItemReader()) {
+	readManually<RD, R> { op() }
+  }
 
 
+  private fun nextAndStoreBytes() = lendStream(CborItemReader()) {
+	readAndStoreBytes() to run {
+	  readAndStoreBytes()
+	}
+  }
 
+  override fun readAndStoreBytes(): CborReadResultWithBytes<CborMap<*, *>> {
+
+	return argumentValue?.let {
+	  var bytes = byteArrayOf()
+	  val data = (range).associate {
+		nextAndStoreBytes().let {
+		  bytes += it.first.bytes
+		  bytes += it.second.bytes
+		  it.first.result to it.second.result
+		}
+	  }
+	  CborReadResultWithBytes(CborMap(data), bytes)
+
+	} ?: run {
+	  TODO()
+	}
+
+  }
 
 }

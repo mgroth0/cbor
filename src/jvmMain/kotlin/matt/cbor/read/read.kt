@@ -1,7 +1,9 @@
 package matt.cbor.read
 
 import matt.cbor.log.INDENT
+import matt.cbor.read.streamman.ByteStoringStreamMan
 import matt.cbor.read.streamman.CborStreamManager
+import matt.cbor.read.streamman.CountingCborStreamMan
 import matt.log.logger.Logger
 import matt.model.info.HasInfo
 import matt.prim.str.times
@@ -22,17 +24,18 @@ abstract class CborReaderTyped<R: CborReadResult> {
 	var defaultLogger: Logger? = null
   }
 
-  @PublishedApi
-  internal var indent = 0
+  @PublishedApi internal var indent = 0
 
 
   var logger: Logger? = defaultLogger
 
-  open fun printReadInfo(r: R) = logger?.log(INDENT*(indent-1) + r.info().truncateWithElipses(25))
+  open fun printReadInfo(r: R) = logger?.log(INDENT*(indent - 1) + r.info().truncateWithElipses(25))
 
   open fun read(): R = readImpl().also {
 	printReadInfo(it)
   }
+
+  abstract fun readAndStoreBytes(): CborReadResultWithBytes<R>
 
   protected abstract fun readImpl(): R
   private var streamMan: CborStreamManager? = null
@@ -48,8 +51,7 @@ abstract class CborReaderTyped<R: CborReadResult> {
   }
 
   @PublishedApi internal inline fun <RR, C: CborReader> lendStream(
-	reader: C,
-	op: C .()->RR
+	reader: C, op: C .()->RR
   ): RR {
 	contract {
 	  callsInPlace(op, kotlin.contracts.InvocationKind.EXACTLY_ONCE)
@@ -72,6 +74,44 @@ abstract class CborReaderTyped<R: CborReadResult> {
   protected fun readUntilBreak() {
 	streamMan
   }
+
+  internal fun initByteCounter() {
+	streamMan = streamMan!!.counter()
+  }
+
+  internal fun endByteCounter(): Int {
+	val counter = (streamMan as CountingCborStreamMan)
+	streamMan = counter.parent
+	return counter.numBytesRead
+  }
+
+  internal fun initByteStoring() {
+	streamMan = streamMan!!.storing()
+  }
+
+  internal fun endByteStoring(): ByteArray {
+	val counter = (streamMan as ByteStoringStreamMan)
+	streamMan = counter.parent
+	return counter.bytes
+  }
+
 }
 
 
+class CborReadResultWithBytes<R: CborReadResult>(
+  val result: R, val bytes: ByteArray
+)
+
+fun <RD: CborReaderTyped<R>, R: CborReadResult, RR> RD.withByteCounter(op: RD.()->RR): Pair<RR, Int> {
+  initByteCounter()
+  val r = op()
+  val count = endByteCounter()
+  return r to count
+}
+
+fun <RD: CborReaderTyped<R>, R: CborReadResult, RR> RD.withByteStoring(op: RD.()->RR): Pair<RR, ByteArray> {
+  initByteStoring()
+  val r = op()
+  val bytes = endByteStoring()
+  return r to bytes
+}

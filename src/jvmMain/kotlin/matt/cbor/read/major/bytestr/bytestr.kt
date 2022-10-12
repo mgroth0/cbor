@@ -2,6 +2,7 @@ package matt.cbor.read.major.bytestr
 
 import matt.cbor.data.head.HeadWithArgument
 import matt.cbor.data.major.bytestr.CborByteString
+import matt.cbor.read.CborReadResultWithBytes
 import matt.cbor.read.major.IntArgTypeReader
 
 class ByteStringReader(head: HeadWithArgument): IntArgTypeReader<CborByteString>(head) {
@@ -18,4 +19,15 @@ class ByteStringReader(head: HeadWithArgument): IntArgTypeReader<CborByteString>
 	  )
 	}
   }
+
+  override fun readAndStoreBytes(): CborReadResultWithBytes<CborByteString> {
+	val bytes = readNBytes(count)
+
+	return CborReadResultWithBytes(
+	  CborByteString(bytes.toList()),
+	  bytes
+	)
+  }
+
+
 }

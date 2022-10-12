@@ -13,6 +13,7 @@ import matt.cbor.data.major.MajorType.TEXT_STRING
 import matt.cbor.err.NOT_WELL_FORMED
 import matt.cbor.err.PARSER_BUG
 import matt.cbor.log.INDENT
+import matt.cbor.read.CborReadResultWithBytes
 import matt.cbor.read.CborReaderTyped
 import matt.lang.pattern.lt
 import matt.prim.str.times
@@ -20,6 +21,8 @@ import matt.prim.str.times
 /*https://www.rfc-editor.org/rfc/rfc8949.html#section-3*/
 class HeadReader(private val initialByte: InitialByte): CborReaderTyped<HeadWithArgument>() {
   private var didRead = false
+
+
   override fun readImpl(): HeadWithArgument {
 	require(!didRead)
 	didRead = true
@@ -38,16 +41,18 @@ class HeadReader(private val initialByte: InitialByte): CborReaderTyped<HeadWith
   override fun printReadInfo(r: HeadWithArgument) {
 	val anno = INDENT*(indent - 1) + r.info()
 	when (initialByte.majorType) {
-	  POS_OR_U_INT,
-	  N_INT,
-	  BYTE_STRING,
-	  TEXT_STRING,
-	  TAG,
-	  SPECIAL_OR_FLOAT -> logger?.printNoNewline("$anno: ")
+	  POS_OR_U_INT, N_INT, BYTE_STRING, TEXT_STRING, TAG, SPECIAL_OR_FLOAT -> logger?.printNoNewline("$anno: ")
 
-	  ARRAY, MAP       -> logger?.log(anno)
+	  ARRAY, MAP                                                           -> logger?.log(anno)
 
 	}
+  }
+
+
+  override fun readAndStoreBytes(): CborReadResultWithBytes<HeadWithArgument> {
+	val head = readImpl()
+	val headBytes = byteArrayOf(head.initialByte.toByte()) + (head.extraBytes ?: byteArrayOf())
+	return CborReadResultWithBytes(head, headBytes)
   }
 }
 

@@ -3,6 +3,7 @@ package matt.cbor
 import matt.cbor.data.head.InitialByte
 import matt.cbor.data.major.CborDataItem
 import matt.cbor.err.UnexpectedMajorTypeException
+import matt.cbor.read.CborReadResultWithBytes
 import matt.cbor.read.CborReaderTyped
 import matt.cbor.read.head.HeadReader
 import matt.cbor.read.major.MajorTypeReader
@@ -43,6 +44,24 @@ class CborItemReader: CborReaderTyped<CborDataItem<*>>() {
 	return lendStream(payloadReader) {
 	  op()
 	}
+  }
+
+  override fun readAndStoreBytes(): CborReadResultWithBytes<CborDataItem<*>> {
+	val initialByte = InitialByte(readByte())
+	val headReader = HeadReader(initialByte)
+	val headWithBytes = headReader.readAndStoreBytes()
+	val payloadReader = headWithBytes.result.majorType.reader(headWithBytes.result)
+
+
+	val itemWIthBytes = lendStream(payloadReader) {
+	  readAndStoreBytes()
+	}
+
+	return CborReadResultWithBytes(
+	  itemWIthBytes.result,
+	  headWithBytes.bytes + itemWIthBytes.bytes
+	)
+
   }
 
 

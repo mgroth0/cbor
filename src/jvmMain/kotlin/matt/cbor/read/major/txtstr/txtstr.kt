@@ -2,6 +2,7 @@ package matt.cbor.read.major.txtstr
 
 import matt.cbor.data.head.HeadWithArgument
 import matt.cbor.data.major.txtstr.CborTextString
+import matt.cbor.read.CborReadResultWithBytes
 import matt.cbor.read.major.IntArgTypeReader
 
 class TextStringReader(head: HeadWithArgument): IntArgTypeReader<CborTextString>(head) {
@@ -19,5 +20,15 @@ class TextStringReader(head: HeadWithArgument): IntArgTypeReader<CborTextString>
 
 
 	}
+  }
+
+  override fun readAndStoreBytes(): CborReadResultWithBytes<CborTextString> {
+	require(argumentValue != null) { "not ready" }
+	val bytes = readNBytes(count)
+
+	return CborReadResultWithBytes(
+	  CborTextString(bytes.decodeToString()),
+	  bytes
+	)
   }
 }
