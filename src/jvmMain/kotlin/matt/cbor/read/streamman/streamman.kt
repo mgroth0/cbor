@@ -1,6 +1,6 @@
 package matt.cbor.read.streamman
 
-import matt.cbor.CborItemReader
+import matt.cbor.read.item.CborItemReader
 import matt.cbor.data.major.CborDataItem
 import matt.cbor.data.major.seven.Break
 import matt.lang.NOT_IMPLEMENTED

@@ -1,6 +1,6 @@
 package matt.cbor.read.major.map
 
-import matt.cbor.CborItemReader
+import matt.cbor.read.item.CborItemReader
 import matt.cbor.data.head.HeadWithArgument
 import matt.cbor.data.major.map.CborMap
 import matt.cbor.read.CborReadResultWithBytes
