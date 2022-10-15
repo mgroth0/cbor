@@ -1,14 +1,25 @@
 {
-    "type": "matt.mstruct.bj.JVM_ONLYModule",
-    "dependencies": [
-        {
-            "type": "matt.mstruct.bj.BuildJsonLibDependency",
-            "cfg": "commonMainApi",
-            "key": "kt-stdlib"
-        },{
-            "type" : "matt.mstruct.bj.BuildJsonProjectDependency",
-            "cfg" :  "commonMainImplementation",
-            "path" : ":k:stream"
-        }
-    ]
+  "type" :         "matt.mstruct.bj.JVM_ONLYModule",
+  "dependencies" : [
+	{
+	  "type" : "matt.mstruct.bj.BuildJsonLibDependency",
+	  "cfg" :  "commonMainApi",
+	  "key" :  "kt-stdlib"
+	},
+	{
+	  "type" : "matt.mstruct.bj.BuildJsonProjectDependency",
+	  "cfg" :  "commonMainImplementation",
+	  "path" : ":k:stream"
+	},
+	{
+	  "type" : "matt.mstruct.bj.BuildJsonProjectDependency",
+	  "cfg" :  "commonMainApi",
+	  "path" : ":k:file"
+	},
+	{
+	  "type" : "matt.mstruct.bj.BuildJsonLibDependency",
+	  "cfg" :  "commonMainApi",
+	  "key" :  "kotlinx-serialization-cbor"
+	}
+  ]
 }

@@ -1,69 +1,16 @@
+@file:OptIn(ExperimentalSerializationApi::class)
+
 package matt.cbor
 
-import matt.cbor.data.head.InitialByte
-import matt.cbor.data.major.CborDataItem
-import matt.cbor.err.UnexpectedMajorTypeException
-import matt.cbor.read.CborReadResultWithBytes
-import matt.cbor.read.CborReaderTyped
-import matt.cbor.read.head.HeadReader
-import matt.cbor.read.major.MajorTypeReader
-import kotlin.contracts.InvocationKind.EXACTLY_ONCE
-import kotlin.contracts.contract
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.cbor.Cbor
+import kotlinx.serialization.decodeFromByteArray
+import kotlinx.serialization.encodeToByteArray
+import matt.file.MFile
+import java.io.OutputStream
 
 
-class CborItemReader: CborReaderTyped<CborDataItem<*>>() {
+fun Any.toCborEncodedBytes() = Cbor.encodeToByteArray(this)
+fun OutputStream.writeAsCbor(any: Any) = write(any.toCborEncodedBytes())
 
-  /*the payload itself already prints log info in its own read()*/
-  override fun read() = readImpl()
-
-  override fun readImpl(): CborDataItem<*> = readManually<MajorTypeReader<*>, CborDataItem<*>> {
-	val r = read()
-	r
-  }
-
-
-  @PublishedApi
-  internal fun readHead() = run {
-	val initialByte = InitialByte(readByte())
-	val headReader = HeadReader(initialByte)
-	lendStream(headReader) {
-	  read()
-	}
-  }
-
-
-  inline fun <reified RD: MajorTypeReader<*>, R> readManually(op: RD.()->R): R {
-	contract {
-	  callsInPlace(op, EXACTLY_ONCE)
-	}
-	val head = readHead()
-	val payloadReader = head.majorType.reader(head) as? RD ?: throw UnexpectedMajorTypeException(
-	  expected = RD::class,
-	  received = head.majorType
-	)
-	return lendStream(payloadReader) {
-	  op()
-	}
-  }
-
-  override fun readAndStoreBytes(): CborReadResultWithBytes<CborDataItem<*>> {
-	val initialByte = InitialByte(readByte())
-	val headReader = HeadReader(initialByte)
-	val headWithBytes = headReader.readAndStoreBytes()
-	val payloadReader = headWithBytes.result.majorType.reader(headWithBytes.result)
-
-
-	val itemWIthBytes = lendStream(payloadReader) {
-	  readAndStoreBytes()
-	}
-
-	return CborReadResultWithBytes(
-	  itemWIthBytes.result,
-	  headWithBytes.bytes + itemWIthBytes.bytes
-	)
-
-  }
-
-
-}
-
+inline fun <reified T> MFile.loadCbor() = Cbor.decodeFromByteArray<T>(readBytes())
