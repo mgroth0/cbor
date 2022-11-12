@@ -22,7 +22,7 @@ interface CborDataItem<T>: CborReadResult, HasInfo {
 enum class MajorType(private val readerCls: KClass<out MajorTypeReader<*>>, val label: String) {
   POS_OR_U_INT(PosOrUIntReader::class, "int"),
   N_INT(NegIntReader::class, "-int"),
-  BYTE_STRING(ByteStringReader::class, "bytes"),
+  BYTE_STRING(ByteStringReader::class, "matt.model.im.bytes"),
   TEXT_STRING(TextStringReader::class, "text"),
   ARRAY(ArrayReader::class, "array"),
   MAP(MapReader::class, "map"),
