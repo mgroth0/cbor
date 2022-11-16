@@ -1,8 +1,8 @@
 package matt.cbor.read.streamman
 
-import matt.cbor.read.item.CborItemReader
 import matt.cbor.data.major.CborDataItem
 import matt.cbor.data.major.seven.Break
+import matt.cbor.read.item.CborItemReader
 import matt.lang.NOT_IMPLEMENTED
 import matt.stream.readOrNullIfEOF
 import java.io.BufferedInputStream
@@ -15,6 +15,7 @@ fun InputStream.readCbor(): CborDataItem<*> {
   return item
 }
 
+fun ByteArray.cborReader() = inputStream().cborReader()
 
 fun InputStream.cborReader(): CborItemReader {
   val man = CborStreamManager(this)

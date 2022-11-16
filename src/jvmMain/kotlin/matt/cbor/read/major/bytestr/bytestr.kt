@@ -8,7 +8,7 @@ import matt.cbor.read.major.IntArgTypeReader
 class ByteStringReader(head: HeadWithArgument): IntArgTypeReader<CborByteString>(head) {
   override fun readImpl(): CborByteString {
 	return argumentValue?.let {
-	  CborByteString(readNBytes(count).toList())
+	  CborByteString(readNBytes(count))
 	} ?: run {
 
 	  /*https://www.rfc-editor.org/rfc/rfc8949.html#section-3.2.3*/
@@ -24,7 +24,7 @@ class ByteStringReader(head: HeadWithArgument): IntArgTypeReader<CborByteString>
 	val bytes = readNBytes(count)
 
 	return CborReadResultWithBytes(
-	  CborByteString(bytes.toList()),
+	  CborByteString(bytes),
 	  bytes
 	)
   }
