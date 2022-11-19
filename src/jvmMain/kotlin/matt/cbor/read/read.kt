@@ -5,7 +5,7 @@ import matt.cbor.read.streamman.ByteStoringStreamMan
 import matt.cbor.read.streamman.CborStreamManager
 import matt.cbor.read.streamman.CountingCborStreamMan
 import matt.log.logger.Logger
-import matt.model.info.HasInfo
+import matt.model.obj.info.HasInfo
 import matt.prim.str.times
 import matt.prim.str.truncateWithElipses
 import kotlin.contracts.contract

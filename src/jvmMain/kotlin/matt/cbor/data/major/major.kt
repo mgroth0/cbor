@@ -11,7 +11,7 @@ import matt.cbor.read.major.seven.SpecialOrFloatReader
 import matt.cbor.read.major.tag.TagReader
 import matt.cbor.read.major.txtstr.TextStringReader
 import matt.cbor.read.major.uint.PosOrUIntReader
-import matt.model.info.HasInfo
+import matt.model.obj.info.HasInfo
 import kotlin.reflect.KClass
 
 interface CborDataItem<T>: CborReadResult, HasInfo {
