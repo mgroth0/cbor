@@ -1,11 +1,14 @@
 package matt.cbor.read.major.array
 
 import matt.cbor.data.head.HeadWithArgument
+import matt.cbor.data.major.CborDataItem
 import matt.cbor.data.major.array.CborArray
+import matt.cbor.data.major.seven.Break
 import matt.cbor.read.CborReadResultWithBytes
 import matt.cbor.read.item.CborItemReader
 import matt.cbor.read.major.IntArgTypeReader
 import matt.cbor.read.major.MajorTypeReader
+import java.util.LinkedList
 
 class ArrayReader(head: HeadWithArgument): IntArgTypeReader<CborArray<*>>(head) {
   override fun readImpl(): CborArray<*> {
@@ -16,7 +19,17 @@ class ArrayReader(head: HeadWithArgument): IntArgTypeReader<CborArray<*>>(head) 
 		}
 	  })
 	} ?: run {
-	  TODO()
+	  val items = LinkedList<CborDataItem<*>>()
+	  do {
+		val nextReader = CborItemReader()
+		val item = lendStream(nextReader) {
+		  read()
+		}
+		if (item != Break) {
+		  items.add(item)
+		}
+	  } while (item != Break)
+	  CborArray(items)
 	}
   }
 

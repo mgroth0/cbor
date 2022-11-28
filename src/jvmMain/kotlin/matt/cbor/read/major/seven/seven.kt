@@ -1,6 +1,7 @@
 package matt.cbor.read.major.seven
 
 import matt.cbor.data.head.HeadWithArgument
+import matt.cbor.data.major.seven.Break
 import matt.cbor.data.major.seven.CborDouble
 import matt.cbor.data.major.seven.CborFalse
 import matt.cbor.data.major.seven.CborFloat
@@ -29,7 +30,7 @@ class SpecialOrFloatReader(head: HeadWithArgument): MajorTypeReader<CborFloatOrS
 		26         -> CborFloat(ByteBuffer.wrap(head.extraBytes!!).float)
 		27         -> CborDouble(ByteBuffer.wrap(head.extraBytes!!).double)
 		28, 29, 30 -> NOT_WELL_FORMED
-		31         -> PARSER_BUG  /*since Break is not a data item it should be handled separately by the reader expecting it*/
+		31         -> Break  /*since Break is not a data item it should be handled separately by the reader expecting it*/
 		else       -> PARSER_BUG
 	  }
 	}

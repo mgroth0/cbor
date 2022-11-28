@@ -33,8 +33,10 @@ class CborDouble(override val raw: Double): CborFloatOrSimpleValue<Double> {
 
 
 /*"not a data item"*/
-object Break {
+object Break: CborFloatOrSimpleValue<Unit> {
   val int = 255.toUInt()
-  val ubyte = int.toUByte()
-  val byte = ubyte.toByte()
+  val uByte = int.toUByte()
+  val byte = uByte.toByte()
+  override val raw = Unit
+  override fun info() = "Cbor break is not a data item!"
 }

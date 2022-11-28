@@ -1,11 +1,14 @@
 package matt.cbor.read.major.map
 
-import matt.cbor.read.item.CborItemReader
 import matt.cbor.data.head.HeadWithArgument
+import matt.cbor.data.major.CborDataItem
 import matt.cbor.data.major.map.CborMap
+import matt.cbor.data.major.seven.Break
 import matt.cbor.read.CborReadResultWithBytes
+import matt.cbor.read.item.CborItemReader
 import matt.cbor.read.major.IntArgTypeReader
 import matt.cbor.read.major.MajorTypeReader
+import java.util.LinkedList
 
 class MapReader(head: HeadWithArgument): IntArgTypeReader<CborMap<*, *>>(head) {
   override fun readImpl(): CborMap<Any?, Any?> {
@@ -13,7 +16,20 @@ class MapReader(head: HeadWithArgument): IntArgTypeReader<CborMap<*, *>>(head) {
 	  val data = (range).associate { next() }
 	  CborMap(data)
 	} ?: run {
-	  TODO()
+	  val items = LinkedList<Pair<CborDataItem<*>, CborDataItem<*>>>()
+	  do {
+		val nextReader = CborItemReader()
+		val key = lendStream(nextReader) {
+		  read()
+		}
+		if (key != Break) {
+		  val value = lendStream(nextReader) {
+			read()
+		  }
+		  items += key to value
+		}
+	  } while (key != Break)
+	  CborMap(items.associate { it.first to it.second })
 	}
   }
 
