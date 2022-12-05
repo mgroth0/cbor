@@ -3,14 +3,19 @@ package matt.cbor.err
 import matt.cbor.data.major.MajorType
 import kotlin.reflect.KClass
 
-@PublishedApi
-internal val PARSER_BUG: Nothing get() = throw RuntimeException("Problem on the cbor parser end")
-
-@PublishedApi
-internal val NOT_WELL_FORMED: Nothing get() = throw NotWellFormedException()
 
 abstract class CborParseException internal constructor(message: String? = null): Exception(message)
+
+class ParserBugException(message: String): CborParseException(message)
+
+@PublishedApi internal fun parserBug(message: String): Nothing = throw ParserBugException(message)
+
+
 class NotWellFormedException: CborParseException()
+
+@PublishedApi internal val NOT_WELL_FORMED: Nothing get() = throw NotWellFormedException()
+
+
 abstract class UnexpectedFormatException(message: String): CborParseException(message)
 class UnexpectedMajorTypeException(
   expected: KClass<*>,

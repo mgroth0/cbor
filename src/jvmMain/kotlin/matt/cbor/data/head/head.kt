@@ -2,6 +2,8 @@ package matt.cbor.data.head
 
 import matt.cbor.data.major.MajorType
 import matt.cbor.data.major.MajorType.ARRAY
+import matt.cbor.data.major.MajorType.SPECIAL_OR_FLOAT
+import matt.cbor.data.major.seven.CborBreak
 import matt.cbor.read.CborReadResult
 import matt.cbor.read.head.CBOR_UNLIMITED_COUNT
 
@@ -28,15 +30,42 @@ class HeadWithArgument(
   val extraBytes: ByteArray? = null
 ): HasInitialByte by initialByte, CborReadResult {
 
-  override fun info() = "${majorType.label}($argumentCode${
-	extraBytes?.let {
-	  " + ${
-		it.joinToString(prefix = "[", postfix = "]") {
-		  it.toInt().toString()
+  override fun info(): String {
+
+	return when {
+	  isBreak -> "BREAK"
+	  else    -> {
+		val argumentString = when {
+		  argumentCode.toInt() == 31 -> "?"
+		  else                       -> argumentCode.toString()
 		}
-	  }"
-	} ?: ""
-  })"
+
+		val extraBytesString = extraBytes?.let {
+		  " + ${
+			it.joinToString(prefix = "[", postfix = "]") {
+			  it.toInt().toString()
+			}
+		  }"
+		} ?: ""
+
+		"${majorType.label}($argumentString${extraBytesString})"
+		/*when {
+		  majorType == SPECIAL_OR_FLOAT -> ""*//*SpecialOrFloatReader(this).readWithoutPrinting().infoString()*//*
+		  else                          -> "${majorType.label}($argumentString${extraBytesString})"
+		}*/
+
+
+	  }
+	}
+
+
+  }
+
+  override val isBreak: Boolean
+	get() {
+	  if (this.majorType != SPECIAL_OR_FLOAT) return false
+	  return argumentCode == CborBreak.argumentCodeByte
+	}
 
   val numBytes = 1 + (extraBytes?.size ?: 0)
 }

@@ -10,4 +10,5 @@ class CborNegInt(private val argumentValue: ULong): CborDataItem<NULong> {
   override fun info() = realValue.toString()
   override val raw by lazy { NULong(argumentValue) }
   val realValue by lazy { raw.realValue }
+  override val isBreak get() = false
 }

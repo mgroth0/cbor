@@ -8,4 +8,5 @@ class CborArray<T>(val items: List<CborDataItem<out T>>): CborDataItem<List<T>> 
   }
 
   override fun info() = items.toString()
+  override val isBreak get() = false
 }

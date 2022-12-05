@@ -3,67 +3,69 @@ package matt.cbor.read.major.array
 import matt.cbor.data.head.HeadWithArgument
 import matt.cbor.data.major.CborDataItem
 import matt.cbor.data.major.array.CborArray
-import matt.cbor.data.major.seven.Break
+import matt.cbor.data.major.seven.CborBreak
 import matt.cbor.read.CborReadResultWithBytes
 import matt.cbor.read.item.CborItemReader
+import matt.cbor.read.item.MightBeBreak
+import matt.cbor.read.item.isNotBreak
 import matt.cbor.read.major.IntArgTypeReader
 import matt.cbor.read.major.MajorTypeReader
-import java.util.LinkedList
+import matt.lang.NOT_IMPLEMENTED
 
 class ArrayReader(head: HeadWithArgument): IntArgTypeReader<CborArray<*>>(head) {
-  override fun readImpl(): CborArray<*> {
-	return argumentValue?.let {
-	  CborArray(range.map {
-		lendStream(CborItemReader()) {
-		  read()
-		}
-	  })
-	} ?: run {
-	  val items = LinkedList<CborDataItem<*>>()
-	  do {
-		val nextReader = CborItemReader()
-		val item = lendStream(nextReader) {
-		  read()
-		}
-		if (item != Break) {
-		  items.add(item)
-		}
-	  } while (item != Break)
-	  CborArray(items)
-	}
-  }
 
-  inline fun <reified Raw, R> readEach(op: (Raw)->R) = range.map {
-	lendStream(CborItemReader()) {
-	  op(read().raw as Raw)
-	}
-  }
 
-  inline fun <reified RD: MajorTypeReader<*>, R> readEachManually(op: RD.()->R) = range.map {
-	lendStream(CborItemReader()) {
-	  readManually<RD, R> { op() }
-	}
-  }
+  override fun readImpl() = CborArray(readAsSequence().toList())
+
+  fun readAsSequence(): Sequence<CborDataItem<*>> = readAsSequenceBase { read() }
 
 
   override fun readAndStoreBytes(): CborReadResultWithBytes<CborArray<*>> {
 
-	return argumentValue?.let {
-	  val itemsAndBytes = range.map {
-		lendStream(CborItemReader()) {
-		  readAndStoreBytes()
-		}
-	  }
-	  CborReadResultWithBytes(
-		CborArray(itemsAndBytes.map { it.result }),
-		itemsAndBytes.map { it.bytes }.reduce { acc, bytes -> acc + bytes }
-	  )
+	//	println("In Cbor Array Reader ${hashCode()}")
 
-	} ?: run {
-	  TODO()
+	val itemsWithBytes = readAsSequenceWithBytes().toList()
+	return CborReadResultWithBytes(
+	  CborArray(itemsWithBytes.map { it.result }),
+	  run {
+		var bb = itemsWithBytes.map { it.bytes }.reduce { acc, bytes -> acc + bytes }
+		if (!hasCount) bb += CborBreak.byte
+		bb
+	  }
+	)
+  }
+
+
+  fun readAsSequenceWithBytes(): Sequence<CborReadResultWithBytes<CborDataItem<*>>> =
+	readAsSequenceBase { readAndStoreBytes() }
+
+  private inline fun <R: MightBeBreak> readAsSequenceBase(crossinline readOp: CborItemReader.()->R): Sequence<R> =
+	sequence {
+	  if (hasCount) range.map {
+		lendStream(CborItemReader()) {
+		  yield(readOp())
+		}
+	  } else {
+		do {
+		  //		val isBreak = lendStream(nextReader) {
+		  //		  isBreak()
+		  //		}
+		  //		if (isBreak) break
+		  val item = lendStream(CborItemReader()) {
+			readOp()
+		  }
+		  if (item.isNotBreak) yield(item)
+		} while (item.isNotBreak)
+	  }
 	}
 
-
+  inline fun <reified RD: MajorTypeReader<*>, R> readEachManually(op: RD.()->R): List<R> {
+	if (!hasCount) NOT_IMPLEMENTED
+	return range.map {
+	  lendStream(CborItemReader()) {
+		readManually<RD, R> { op() }
+	  }
+	}
   }
 
 

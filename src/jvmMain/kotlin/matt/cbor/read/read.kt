@@ -1,19 +1,23 @@
 package matt.cbor.read
 
 import matt.cbor.log.INDENT
+import matt.cbor.read.item.MightBeBreak
 import matt.cbor.read.streamman.ByteStoringStreamMan
 import matt.cbor.read.streamman.CborStreamManager
 import matt.cbor.read.streamman.CountingCborStreamMan
 import matt.log.logger.Logger
 import matt.model.obj.info.HasInfo
+import matt.model.obj.tostringbuilder.toStringBuilder
+import matt.prim.byte.reasonablePrintableString
 import matt.prim.str.times
 import matt.prim.str.truncateWithElipses
 import kotlin.contracts.contract
 
-interface CborReadResult: HasInfo
+interface CborReadResult: HasInfo, MightBeBreak
 
 object EOF: CborReadResult {
   override fun info() = "EOF"
+  override val isBreak = false
 }
 
 typealias CborReader = CborReaderTyped<*>
@@ -29,13 +33,16 @@ abstract class CborReaderTyped<R: CborReadResult> {
 
   var logger: Logger? = defaultLogger
 
-  open fun printReadInfo(r: R) = logger?.log(INDENT*(indent - 1) + r.info().truncateWithElipses(25))
+  open fun printReadInfo(r: R) {
+	logger?.log(INDENT*(indent - 1) + r.info().truncateWithElipses(25))
+  }
 
+  fun readWithoutPrinting() = readImpl()
   open fun read(): R = readImpl().also {
 	printReadInfo(it)
   }
 
-  abstract fun readAndStoreBytes(): CborReadResultWithBytes<R>
+  abstract fun readAndStoreBytes(): CborReadResultWithBytes<out R>
 
   protected abstract fun readImpl(): R
   private var streamMan: CborStreamManager? = null
@@ -51,7 +58,7 @@ abstract class CborReaderTyped<R: CborReadResult> {
   }
 
   @PublishedApi internal inline fun <RR, C: CborReader> lendStream(
-	reader: C, op: C .()->RR
+	reader: C, op: C.()->RR
   ): RR {
 	contract {
 	  callsInPlace(op, kotlin.contracts.InvocationKind.EXACTLY_ONCE)
@@ -63,7 +70,12 @@ abstract class CborReaderTyped<R: CborReadResult> {
 	return r
   }
 
-  protected fun readByte() = streamMan!!.read().also { require(it > -1) }
+  protected fun readByte() = streamMan!!.read().also {
+	require(it > -1) {
+	  "unexpectedly reached end of stream"
+	}
+  }
+
   fun readNBytes(len: Int) = streamMan!!.readNBytes(len)
   protected fun readNBytes(len: ULong): ByteArray {
 	require(len <= Int.MAX_VALUE.toUInt())
@@ -100,7 +112,12 @@ abstract class CborReaderTyped<R: CborReadResult> {
 
 class CborReadResultWithBytes<R: CborReadResult>(
   val result: R, val bytes: ByteArray
-)
+): MightBeBreak by result {
+  override fun toString() = toStringBuilder(
+	"bytes" to bytes.reasonablePrintableString(),
+	"result" to result
+  )
+}
 
 fun <RD: CborReaderTyped<R>, R: CborReadResult, RR> RD.withByteCounter(op: RD.()->RR): Pair<RR, Int> {
   initByteCounter()

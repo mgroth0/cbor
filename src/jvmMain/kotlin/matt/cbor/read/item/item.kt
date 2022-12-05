@@ -20,6 +20,15 @@ class CborItemReader: CborReaderTyped<CborDataItem<*>>() {
 	r
   }
 
+  //  @PublishedApi
+  //  internal var headFromBreakTest: HeadWithArgument? = null
+  //
+  //  internal fun isBreak(): Boolean {
+  //	require(headFromBreakTest == null)
+  //	val head = readHead()
+  //	return head.isBreak()
+  //  }
+
 
   @PublishedApi
   internal fun readHead() = run {
@@ -36,6 +45,11 @@ class CborItemReader: CborReaderTyped<CborDataItem<*>>() {
 	  callsInPlace(op, EXACTLY_ONCE)
 	}
 	val head = readHead()
+
+	//	if (head.isBreak()) {
+	//
+	//	}
+
 	val payloadReader = head.majorType.reader(head) as? RD ?: throw UnexpectedMajorTypeException(
 	  expected = RD::class,
 	  received = head.majorType
@@ -46,9 +60,14 @@ class CborItemReader: CborReaderTyped<CborDataItem<*>>() {
   }
 
   override fun readAndStoreBytes(): CborReadResultWithBytes<CborDataItem<*>> {
+
+	//	println("In Cbor Item Reader ${hashCode()}")
+
 	val initialByte = InitialByte(readByte())
 	val headReader = HeadReader(initialByte)
-	val headWithBytes = headReader.readAndStoreBytes()
+	val headWithBytes = lendStream(headReader) {
+	  readAndStoreBytes()
+	}
 	val payloadReader = headWithBytes.result.majorType.reader(headWithBytes.result)
 
 
@@ -66,3 +85,7 @@ class CborItemReader: CborReaderTyped<CborDataItem<*>>() {
 
 }
 
+interface MightBeBreak {
+  val isBreak: Boolean
+}
+val MightBeBreak.isNotBreak get() = !isBreak

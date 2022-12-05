@@ -4,4 +4,5 @@ import matt.cbor.data.major.CborDataItem
 
 class CborUInt(override val raw: ULong): CborDataItem<ULong> {
   override fun info() = raw.toString()
+  override val isBreak get() = false
 }

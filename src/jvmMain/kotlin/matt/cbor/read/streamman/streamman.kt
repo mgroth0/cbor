@@ -1,7 +1,7 @@
 package matt.cbor.read.streamman
 
 import matt.cbor.data.major.CborDataItem
-import matt.cbor.data.major.seven.Break
+import matt.cbor.data.major.seven.CborBreak
 import matt.cbor.read.item.CborItemReader
 import matt.lang.NOT_IMPLEMENTED
 import matt.stream.readOrNullIfEOF
@@ -39,10 +39,10 @@ open class CborStreamManager internal constructor(stream: InputStream) {
 	val bytes = mutableListOf<Byte>()
 	do {
 	  val b = read().toByte()
-	  if (b != Break.byte) {
+	  if (b != CborBreak.byte) {
 		bytes += b
 	  }
-	} while (b != Break.byte)
+	} while (b != CborBreak.byte)
 	return bytes
   }
 

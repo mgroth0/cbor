@@ -3,8 +3,8 @@ package matt.cbor.read.major
 import matt.cbor.data.head.HeadWithArgument
 import matt.cbor.data.major.CborDataItem
 import matt.cbor.err.NOT_WELL_FORMED
-import matt.cbor.err.PARSER_BUG
 import matt.cbor.err.UnexpectedCountException
+import matt.cbor.err.parserBug
 import matt.cbor.read.CborReaderTyped
 import java.nio.ByteBuffer
 
@@ -14,14 +14,14 @@ abstract class MajorTypeReader<D: CborDataItem<*>>(val head: HeadWithArgument): 
 abstract class IntArgTypeReader<D: CborDataItem<*>>(head: HeadWithArgument): MajorTypeReader<D>(head) {
   val argumentValue = when {
 	head.argumentCode < 24 -> head.argumentCode.toUByte()
-	else                   -> when (head.argumentCode.toInt()) {
+	else                   -> when (val code = head.argumentCode.toInt()) {
 	  24         -> ByteBuffer.wrap(head.extraBytes!!).get().toUByte()
 	  25         -> ByteBuffer.wrap(head.extraBytes!!).short.toUShort()
 	  26         -> ByteBuffer.wrap(head.extraBytes!!).int.toUInt()
 	  27         -> ByteBuffer.wrap(head.extraBytes!!).long.toULong()
 	  28, 29, 30 -> NOT_WELL_FORMED
 	  31         -> null
-	  else       -> PARSER_BUG
+	  else       -> parserBug("argumentCode=${code}, which should never happen")
 	}
   }
   val hasCount = argumentValue != null
@@ -32,7 +32,8 @@ abstract class IntArgTypeReader<D: CborDataItem<*>>(head: HeadWithArgument): Maj
 	  is UShort -> 0.toUShort().toULong() + argumentValue
 	  is UByte  -> 0.toUByte().toULong() + argumentValue
 	  is Byte   -> 0b0.toULong() + argumentValue.toUByte()
-	  else      -> PARSER_BUG
+	  null      -> parserBug("tried to get count when hasCount=$hasCount")
+	  else      -> parserBug("argumentValue is ${argumentValue::class}, which should never happen")
 	}
   }
 

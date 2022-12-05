@@ -11,7 +11,7 @@ import matt.cbor.data.major.MajorType.SPECIAL_OR_FLOAT
 import matt.cbor.data.major.MajorType.TAG
 import matt.cbor.data.major.MajorType.TEXT_STRING
 import matt.cbor.err.NOT_WELL_FORMED
-import matt.cbor.err.PARSER_BUG
+import matt.cbor.err.parserBug
 import matt.cbor.log.INDENT
 import matt.cbor.read.CborReadResultWithBytes
 import matt.cbor.read.CborReaderTyped
@@ -26,7 +26,7 @@ class HeadReader(private val initialByte: InitialByte): CborReaderTyped<HeadWith
   override fun readImpl(): HeadWithArgument {
 	require(!didRead)
 	didRead = true
-	return when (initialByte.argumentCode.toInt()) {
+	return when (val code = initialByte.argumentCode.toInt()) {
 	  in lt(24)            -> HeadWithArgument(initialByte)
 	  24                   -> HeadWithArgument(initialByte, readNBytes(1))
 	  25                   -> HeadWithArgument(initialByte, readNBytes(2))
@@ -34,16 +34,21 @@ class HeadReader(private val initialByte: InitialByte): CborReaderTyped<HeadWith
 	  27                   -> HeadWithArgument(initialByte, readNBytes(8))
 	  28, 29, 30           -> NOT_WELL_FORMED
 	  CBOR_UNLIMITED_COUNT -> HeadWithArgument(initialByte)
-	  else                 -> PARSER_BUG
+	  else                 -> parserBug("argumentCode=${code}, which should never happen")
 	}
   }
 
   override fun printReadInfo(r: HeadWithArgument) {
-	val anno = INDENT*(indent - 1) + r.info()
-	when (initialByte.majorType) {
-	  POS_OR_U_INT, N_INT, BYTE_STRING, TEXT_STRING, TAG, SPECIAL_OR_FLOAT -> logger?.printNoNewline("$anno: ")
 
-	  ARRAY, MAP                                                           -> logger?.log(anno)
+	if (logger == null) return
+
+	val anno = INDENT*(indent - 1) + r.info()
+
+	when (initialByte.majorType) {
+	  SPECIAL_OR_FLOAT                                   -> Unit
+	  POS_OR_U_INT, N_INT, BYTE_STRING, TEXT_STRING, TAG -> logger?.printNoNewline("$anno: ")
+
+	  ARRAY, MAP                                         -> logger?.log(anno)
 
 	}
   }
