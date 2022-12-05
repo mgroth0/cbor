@@ -12,7 +12,6 @@ import matt.cbor.read.major.IntArgTypeReader
 import matt.cbor.read.major.MajorTypeReader
 import matt.lang.NOT_IMPLEMENTED
 import matt.model.obj.tostringbuilder.toStringBuilder
-import java.util.LinkedList
 
 class MapReader(head: HeadWithArgument): IntArgTypeReader<CborMap<*, *>>(head) {
 
@@ -85,14 +84,16 @@ class MapReader(head: HeadWithArgument): IntArgTypeReader<CborMap<*, *>>(head) {
 
   override fun readAndStoreBytes(): CborReadResultWithBytes<CborMap<Any?, Any?>> {
 
-	val seq = readAsSequenceWithBytes()    //	println("In Cbor Map Reader ${hashCode()}")
+//	val seq = readAsSequenceWithBytes()    //	println("In Cbor Map Reader ${hashCode()}")
 	/*used to to seq.toList() but that led to a stack overflow exception!!??*/
-	val itemsWithBytes =
-	  LinkedList<Entry<CborReadResultWithBytes<CborDataItem<*>>, CborReadResultWithBytes<CborDataItem<*>>>>()
-	for (it in seq) {
-	  itemsWithBytes += it
-	  println("it=${it}")
-	}
+	val itemsWithBytes = readAsSequenceWithBytes().toList()
+
+
+//	  LinkedList<Entry<CborReadResultWithBytes<CborDataItem<*>>, CborReadResultWithBytes<CborDataItem<*>>>>()
+//	for (it in seq) {
+//	  itemsWithBytes += it
+////	  println("it=${it}")
+//	}
 
 
 	var bytes = byteArrayOf()
@@ -165,7 +166,7 @@ class MapReader(head: HeadWithArgument): IntArgTypeReader<CborMap<*, *>>(head) {
 		//		}
 		//		if (isBreak) break
 
-		println("reading key in reader ${this@MapReader.hashCode()}")
+//		println("reading key in reader ${this@MapReader.hashCode()}")
 
 		val key = lendStream(CborItemReader()) {
 		  keyReadOp()
