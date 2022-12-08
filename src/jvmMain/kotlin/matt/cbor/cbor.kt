@@ -8,6 +8,7 @@ import kotlinx.serialization.cbor.Cbor
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 import matt.file.MFile
+import matt.model.code.yes.YesIUse
 import java.io.OutputStream
 
 
@@ -28,6 +29,7 @@ inline fun <reified T> MFile.loadCbor(): T {
 inline fun <reified T> ByteArray.loadCbor(): T = Cbor.decodeFromByteArray(this)
 
 
+object YesIUseCbor: YesIUse
 inline fun <reified T> MFile.loadOrSave(op: ()->T): T {
   return if (exists()) {
 	loadCbor()
