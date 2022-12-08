@@ -26,3 +26,12 @@ inline fun <reified T> MFile.loadCbor(): T {
 
 
 inline fun <reified T> ByteArray.loadCbor(): T = Cbor.decodeFromByteArray(this)
+
+
+inline fun <reified T> MFile.loadOrSave(op: ()->T): T {
+  return if (exists()) {
+	loadCbor()
+  } else op().also {
+	writeBytes(Cbor.encodeToByteArray(it))
+  }
+}
