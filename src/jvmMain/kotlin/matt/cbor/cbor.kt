@@ -30,8 +30,11 @@ inline fun <reified T> ByteArray.loadCbor(): T = Cbor.decodeFromByteArray(this)
 
 
 object YesIUseCbor: YesIUse
-inline fun <reified T> MFile.loadOrSave(op: ()->T): T {
-  return if (exists()) {
+inline fun <reified T> MFile.loadOrSave(
+  forceRecreate: Boolean = false,
+  op: ()->T
+): T {
+  return if (!forceRecreate && exists()) {
 	loadCbor()
   } else op().also {
 	writeBytes(Cbor.encodeToByteArray(it))
