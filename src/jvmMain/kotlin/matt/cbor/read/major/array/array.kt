@@ -28,7 +28,8 @@ class ArrayReader(head: HeadWithArgument): IntArgTypeReader<CborArray<*>>(head) 
 	return CborReadResultWithBytes(
 	  CborArray(itemsWithBytes.map { it.result }),
 	  run {
-		var bb = itemsWithBytes.map { it.bytes }.reduce { acc, bytes -> acc + bytes }
+		var bb = if (itemsWithBytes.isEmpty()) byteArrayOf() else itemsWithBytes.map { it.bytes }
+		  .reduce { acc, bytes -> acc + bytes }
 		if (!hasCount) bb += CborBreak.byte
 		bb
 	  }
