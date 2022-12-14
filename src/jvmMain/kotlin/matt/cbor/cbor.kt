@@ -7,8 +7,12 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.cbor.Cbor
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import matt.file.MFile
 import matt.model.code.yes.YesIUse
+import matt.model.obj.text.WritableBytes
+import matt.model.obj.text.WritableText
 import java.io.OutputStream
 
 
@@ -30,6 +34,7 @@ inline fun <reified T> ByteArray.loadCbor(): T = Cbor.decodeFromByteArray(this)
 
 
 object YesIUseCbor: YesIUse
+
 inline fun <reified T> MFile.loadOrSave(
   forceRecreate: Boolean = false,
   op: ()->T
@@ -40,3 +45,11 @@ inline fun <reified T> MFile.loadOrSave(
 	writeBytes(Cbor.encodeToByteArray(it))
   }
 }
+
+
+inline fun <reified T> WritableBytes.save(t: T) {
+  bytes = (Cbor.encodeToByteArray(t))
+}
+
+
+inline fun <reified T: Any> T.saveAsCborTo(f: WritableBytes) = f.save(this)
