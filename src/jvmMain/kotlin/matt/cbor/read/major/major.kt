@@ -11,6 +11,7 @@ import java.nio.ByteBuffer
 
 abstract class MajorTypeReader<D: CborDataItem<*>>(val head: HeadWithArgument): CborReaderTyped<D>()
 
+@OptIn(ExperimentalStdlibApi::class)
 abstract class IntArgTypeReader<D: CborDataItem<*>>(head: HeadWithArgument): MajorTypeReader<D>(head) {
   val argumentValue = when {
 	head.argumentCode < 24 -> head.argumentCode.toUByte()
