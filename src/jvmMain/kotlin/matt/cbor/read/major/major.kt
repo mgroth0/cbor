@@ -44,7 +44,7 @@ abstract class IntArgTypeReader<D: CborDataItem<*>>(head: HeadWithArgument): Maj
   }
 
   val range by lazy {
-	0L.toULong() until count
+	0L.toULong() ..< count
   }
 }
 
