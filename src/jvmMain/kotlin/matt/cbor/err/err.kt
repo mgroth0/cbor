@@ -26,3 +26,8 @@ class UnexpectedCountException(
   expected: ULong,
   received: ULong
 ): UnexpectedFormatException("expected count $expected but received $received")
+
+class UnexpectedCountNotInRangeException(
+  expected: ULongRange,
+  received: ULong
+): UnexpectedFormatException("expected count $expected but received $received")

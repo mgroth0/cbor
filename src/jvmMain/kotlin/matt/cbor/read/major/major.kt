@@ -4,6 +4,7 @@ import matt.cbor.data.head.HeadWithArgument
 import matt.cbor.data.major.CborDataItem
 import matt.cbor.err.NOT_WELL_FORMED
 import matt.cbor.err.UnexpectedCountException
+import matt.cbor.err.UnexpectedCountNotInRangeException
 import matt.cbor.err.parserBug
 import matt.cbor.read.CborReaderTyped
 import java.nio.ByteBuffer
@@ -41,6 +42,11 @@ abstract class IntArgTypeReader<D: CborDataItem<*>>(head: HeadWithArgument): Maj
   fun expectCount(expected: ULong) {
 	if (count != expected) {
 	  throw UnexpectedCountException(expected = expected, received = count)
+	}
+  }
+  fun expectCount(range: ULongRange) {
+	if (count !in range) {
+	  throw UnexpectedCountNotInRangeException(expected = range, received = count)
 	}
   }
 
