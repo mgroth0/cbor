@@ -47,13 +47,13 @@ class MapReader(head: HeadWithArgument): IntArgTypeReader<CborMap<*, *>>(head) {
 	}
   }
 
-  inline fun <reified T> nextKeyOnly() = lendStream(CborItemReader()) {
+  inline fun <reified T> nextKeyOrValueOnly() = lendStream(CborItemReader()) {
 	read().raw as T
   }
 
-  inline fun <reified T> nextKeyOnly(requireIs: T) = lendStream(CborItemReader()) {
+  inline fun <reified T> nextKeyOrValueOnly(requireIs: T) = lendStream(CborItemReader()) {
 	val k = read().raw as T
-	require(k==requireIs) {
+	require(k == requireIs) {
 	  "requireIs=$requireIs, k=$k"
 	}
 	k
@@ -68,8 +68,6 @@ class MapReader(head: HeadWithArgument): IntArgTypeReader<CborMap<*, *>>(head) {
 	}
 	return n.second.raw as T
   }
-
-
 
 
   inline fun <reified RD: MajorTypeReader<*>, R> nextValueManual(
@@ -97,16 +95,16 @@ class MapReader(head: HeadWithArgument): IntArgTypeReader<CborMap<*, *>>(head) {
 
   override fun readAndStoreBytes(): CborReadResultWithBytes<CborMap<Any?, Any?>> {
 
-//	val seq = readAsSequenceWithBytes()    //	println("In Cbor Map Reader ${hashCode()}")
+	//	val seq = readAsSequenceWithBytes()    //	println("In Cbor Map Reader ${hashCode()}")
 	/*used to to seq.toList() but that led to a stack overflow exception!!??*/
 	val itemsWithBytes = readAsSequenceWithBytes().toList()
 
 
-//	  LinkedList<Entry<CborReadResultWithBytes<CborDataItem<*>>, CborReadResultWithBytes<CborDataItem<*>>>>()
-//	for (it in seq) {
-//	  itemsWithBytes += it
-////	  println("it=${it}")
-//	}
+	//	  LinkedList<Entry<CborReadResultWithBytes<CborDataItem<*>>, CborReadResultWithBytes<CborDataItem<*>>>>()
+	//	for (it in seq) {
+	//	  itemsWithBytes += it
+	////	  println("it=${it}")
+	//	}
 
 
 	var bytes = byteArrayOf()
@@ -152,10 +150,10 @@ class MapReader(head: HeadWithArgument): IntArgTypeReader<CborMap<*, *>>(head) {
 
   fun readAsSequenceWithBytes(): Sequence<Entry<CborReadResultWithBytes<CborDataItem<*>>, CborReadResultWithBytes<CborDataItem<*>>>> =
 	readAsSequenceBase({
-	  readAndStoreBytes()
-	}, {
-	  readAndStoreBytes()
-	})
+						 readAndStoreBytes()
+					   }, {
+						 readAndStoreBytes()
+					   })
 
 
   private inline fun <K: MightBeBreak, V> readAsSequenceBase(
@@ -179,7 +177,7 @@ class MapReader(head: HeadWithArgument): IntArgTypeReader<CborMap<*, *>>(head) {
 		//		}
 		//		if (isBreak) break
 
-//		println("reading key in reader ${this@MapReader.hashCode()}")
+		//		println("reading key in reader ${this@MapReader.hashCode()}")
 
 		val key = lendStream(CborItemReader()) {
 		  keyReadOp()

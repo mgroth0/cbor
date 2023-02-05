@@ -43,7 +43,11 @@ abstract class IntArgTypeReader<D: CborDataItem<*>>(head: HeadWithArgument): Maj
 	if (count != expected) {
 	  throw UnexpectedCountException(expected = expected, received = count)
 	}
+
   }
+
+  fun expectCount(range: IntRange) = expectCount(range.start.toULong()..range.endInclusive.toULong())
+
   fun expectCount(range: ULongRange) {
 	if (count !in range) {
 	  throw UnexpectedCountNotInRangeException(expected = range, received = count)
@@ -51,7 +55,7 @@ abstract class IntArgTypeReader<D: CborDataItem<*>>(head: HeadWithArgument): Maj
   }
 
   val range by lazy {
-	0L.toULong() ..< count
+	0L.toULong()..<count
   }
 }
 
