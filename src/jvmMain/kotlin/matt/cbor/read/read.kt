@@ -7,10 +7,10 @@ import matt.cbor.read.streamman.CborStreamManager
 import matt.cbor.read.streamman.CountingCborStreamMan
 import matt.log.logger.Logger
 import matt.model.obj.info.HasInfo
-import matt.model.obj.tostringbuilder.toStringBuilder
 import matt.prim.byte.reasonablePrintableString
 import matt.prim.str.times
 import matt.prim.str.truncateWithElipses
+import matt.reflect.tostring.toStringBuilder
 import kotlin.contracts.contract
 
 interface CborReadResult: HasInfo, MightBeBreak

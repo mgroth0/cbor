@@ -1,7 +1,7 @@
 package matt.cbor.data.major.txtstr
 
 import matt.cbor.data.major.CborDataItem
-import matt.model.obj.tostringbuilder.toStringBuilder
+import matt.reflect.tostring.toStringBuilder
 
 class CborTextString(override val raw: String): CborDataItem<String> {
   override fun info() = "\"$raw\""

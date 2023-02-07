@@ -1,5 +1,6 @@
 {
-  "type" :         "matt.mstruct.bj.MultiPlatformModule", "jvm": {},
+  "type" :         "matt.mstruct.bj.MultiPlatformModule",
+  "jvm" :          {},
   "dependencies" : [
 	{
 	  "type" : "matt.mstruct.bj.BuildJsonLibDependency",
@@ -20,6 +21,11 @@
 	  "type" : "matt.mstruct.bj.BuildJsonLibDependency",
 	  "cfg" :  "commonMainApi",
 	  "key" :  "kotlinx-serialization-cbor"
+	},
+	{
+	  "type" : "matt.mstruct.bj.BuildJsonProjectDependency",
+	  "cfg" :  "commonMainApi",
+	  "path" : ":k:reflect"
 	}
   ]
 }

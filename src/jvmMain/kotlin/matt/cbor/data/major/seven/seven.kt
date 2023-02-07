@@ -2,7 +2,7 @@ package matt.cbor.data.major.seven
 
 import matt.cbor.data.major.CborDataItem
 import matt.lang.Undefined
-import matt.model.obj.tostringbuilder.toStringBuilder
+import matt.reflect.tostring.toStringBuilder
 
 sealed interface CborFloatOrSimpleValue<T>: CborDataItem<T>
 
