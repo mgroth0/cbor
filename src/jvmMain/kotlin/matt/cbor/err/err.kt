@@ -17,6 +17,7 @@ class NotWellFormedException: CborParseException()
 
 
 abstract class UnexpectedFormatException(message: String): CborParseException(message)
+
 class UnexpectedMajorTypeException(
   expected: KClass<*>,
   received: MajorType
@@ -31,3 +32,10 @@ class UnexpectedCountNotInRangeException(
   expected: ULongRange,
   received: ULong
 ): UnexpectedFormatException("expected count $expected but received $received")
+
+class UnexpectedNullException(): UnexpectedFormatException("expected non-null value but got a null")
+
+class UnexpectedTypeException(
+  expected: KClass<*>,
+  received: KClass<*>
+): UnexpectedFormatException("expected type $expected but received $received")

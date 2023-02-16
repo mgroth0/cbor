@@ -4,6 +4,8 @@ import matt.cbor.data.head.HeadWithArgument
 import matt.cbor.data.major.CborDataItem
 import matt.cbor.data.major.map.CborMap
 import matt.cbor.data.major.seven.CborBreak
+import matt.cbor.err.UnexpectedNullException
+import matt.cbor.err.UnexpectedTypeException
 import matt.cbor.read.CborReadResultWithBytes
 import matt.cbor.read.item.CborItemReader
 import matt.cbor.read.item.MightBeBreak
@@ -48,7 +50,15 @@ class MapReader(head: HeadWithArgument): IntArgTypeReader<CborMap<*, *>>(head) {
   }
 
   inline fun <reified T> nextKeyOrValueOnly() = lendStream(CborItemReader()) {
-	read().raw as T
+	val r = read().raw
+	if (r !is T) {
+	  if (r == null) {
+		throw UnexpectedNullException()
+	  } else {
+		throw UnexpectedTypeException(expected = T::class, received = r::class )
+	  }
+	}
+	r
   }
 
   inline fun <reified T> nextKeyOrValueOnly(requireIs: T) = lendStream(CborItemReader()) {
