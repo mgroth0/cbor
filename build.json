@@ -1,31 +1,31 @@
 {
-  "type" :         "MultiPlatformModule",
-  "jvm" :          {},
-  "dependencies" : [
-	{
-	  "type" : "Lib",
-	  "cfg" :  "commonMainApi",
-	  "key" :  "kt-stdlib"
-	},
-	{
-	  "type" : "Project",
-	  "cfg" :  "commonMainImplementation",
-	  "path" : ":k:stream"
-	},
-	{
-	  "type" : "Project",
-	  "cfg" :  "commonMainApi",
-	  "path" : ":k:file"
-	},
-	{
-	  "type" : "Lib",
-	  "cfg" :  "commonMainApi",
-	  "key" :  "kotlinx-serialization-cbor"
-	},
-	{
-	  "type" : "Project",
-	  "cfg" :  "commonMainApi",
-	  "path" : ":k:reflect"
-	}
+  "type": "MultiPlatformModule",
+  "jvm": {},
+  "dependencies": [
+    {
+      "type": "Lib",
+      "cfg": "commonMainApi",
+      "key": "kt-stdlib"
+    },
+    {
+      "type": "Project",
+      "cfg": "commonMainImplementation",
+      "path": ":k:stream"
+    },
+    {
+      "type": "Project",
+      "cfg": "commonMainApi",
+      "path": ":k:file"
+    },
+    {
+      "type": "Lib",
+      "cfg": "commonMainApi",
+      "key": "kotlinx-serialization-cbor"
+    },
+    {
+      "type": "Project",
+      "cfg": "commonMainApi",
+      "path": ":k:reflect"
+    }
   ]
 }
