@@ -51,10 +51,3 @@ inline fun <reified T> WritableBytes.save(t: T) {
 
 
 inline fun <reified T : Any> T.saveAsCborTo(f: WritableBytes) = f.save(this)
-
-
-val ignoreUnknownKeysCbor by lazy {
-    Cbor(Cbor) {
-        this.ignoreUnknownKeys = true
-    }
-}

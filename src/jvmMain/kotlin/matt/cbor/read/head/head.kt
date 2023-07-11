@@ -16,49 +16,50 @@ import matt.cbor.log.INDENT
 import matt.cbor.read.CborReadResultWithBytes
 import matt.cbor.read.CborReaderTyped
 import matt.lang.pattern.lt
+import matt.lang.require.requireNot
 import matt.prim.str.times
 
 /*https://www.rfc-editor.org/rfc/rfc8949.html#section-3*/
-class HeadReader(private val initialByte: InitialByte): CborReaderTyped<HeadWithArgument>() {
-  private var didRead = false
+class HeadReader(private val initialByte: InitialByte) : CborReaderTyped<HeadWithArgument>() {
+    private var didRead = false
 
 
-  override fun readImpl(): HeadWithArgument {
-	require(!didRead)
-	didRead = true
-	return when (val code = initialByte.argumentCode.toInt()) {
-	  in lt(24)            -> HeadWithArgument(initialByte)
-	  24                   -> HeadWithArgument(initialByte, readNBytes(1))
-	  25                   -> HeadWithArgument(initialByte, readNBytes(2))
-	  26                   -> HeadWithArgument(initialByte, readNBytes(4))
-	  27                   -> HeadWithArgument(initialByte, readNBytes(8))
-	  28, 29, 30           -> NOT_WELL_FORMED
-	  CBOR_UNLIMITED_COUNT -> HeadWithArgument(initialByte)
-	  else                 -> parserBug("argumentCode=${code}, which should never happen")
-	}
-  }
+    override fun readImpl(): HeadWithArgument {
+        requireNot(didRead)
+        didRead = true
+        return when (val code = initialByte.argumentCode.toInt()) {
+            in lt(24)            -> HeadWithArgument(initialByte)
+            24                   -> HeadWithArgument(initialByte, readNBytes(1))
+            25                   -> HeadWithArgument(initialByte, readNBytes(2))
+            26                   -> HeadWithArgument(initialByte, readNBytes(4))
+            27                   -> HeadWithArgument(initialByte, readNBytes(8))
+            28, 29, 30           -> NOT_WELL_FORMED
+            CBOR_UNLIMITED_COUNT -> HeadWithArgument(initialByte)
+            else                 -> parserBug("argumentCode=${code}, which should never happen")
+        }
+    }
 
-  override fun printReadInfo(r: HeadWithArgument) {
+    override fun printReadInfo(r: HeadWithArgument) {
 
-	if (logger == null) return
+        if (logger == null) return
 
-	val anno = INDENT*(indent - 1) + r.info()
+        val anno = INDENT * (indent - 1) + r.info()
 
-	when (initialByte.majorType) {
-	  SPECIAL_OR_FLOAT                                   -> Unit
-	  POS_OR_U_INT, N_INT, BYTE_STRING, TEXT_STRING, TAG -> logger?.printNoNewline("$anno: ")
+        when (initialByte.majorType) {
+            SPECIAL_OR_FLOAT                                   -> Unit
+            POS_OR_U_INT, N_INT, BYTE_STRING, TEXT_STRING, TAG -> logger?.printNoNewline("$anno: ")
 
-	  ARRAY, MAP                                         -> logger?.log(anno)
+            ARRAY, MAP                                         -> logger?.log(anno)
 
-	}
-  }
+        }
+    }
 
 
-  override fun readAndStoreBytes(): CborReadResultWithBytes<HeadWithArgument> {
-	val head = readImpl()
-	val headBytes = byteArrayOf(head.initialByte.toByte()) + (head.extraBytes ?: byteArrayOf())
-	return CborReadResultWithBytes(head, headBytes)
-  }
+    override fun readAndStoreBytes(): CborReadResultWithBytes<HeadWithArgument> {
+        val head = readImpl()
+        val headBytes = byteArrayOf(head.initialByte.toByte()) + (head.extraBytes ?: byteArrayOf())
+        return CborReadResultWithBytes(head, headBytes)
+    }
 }
 
 const val CBOR_UNLIMITED_COUNT = 31

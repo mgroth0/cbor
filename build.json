@@ -1,5 +1,6 @@
 {
   "type": "MultiPlatformModule",
+  "js": {"type":"lib"},
   "jvm": {},
   "dependencies": [
     {
