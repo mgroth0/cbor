@@ -18,7 +18,7 @@ class InitialByte(
   override val argumentCode: Byte
 ): HasInitialByte {
   constructor(initialByte: Int): this(
-	majorType = MajorType.values()[initialByte shr 5],
+	majorType = MajorType.entries[initialByte shr 5],
 	argumentCode = (initialByte and 0b000_11111).toByte()
   )
 
