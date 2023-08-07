@@ -45,9 +45,9 @@ inline fun <reified T> MFile.loadOrSaveCbor(
 }
 
 
-inline fun <reified T> WritableBytes.save(t: T) {
+inline fun <reified T> WritableBytes.saveCbor(t: T) {
     bytes = (Cbor.encodeToByteArray(t))
 }
 
 
-inline fun <reified T : Any> T.saveAsCborTo(f: WritableBytes) = f.save(this)
+inline fun <reified T : Any> T.saveAsCborTo(f: WritableBytes) = f.saveCbor(this)
