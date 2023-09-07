@@ -6,22 +6,36 @@ import matt.cbor.writeAsCbor
 import matt.file.MFile
 import java.io.OutputStream
 
-fun MFile.cborWriter() = CborWriter(outputStream())
+fun MFile.cborUnlimitedListWriter() = CborUnlimitedListWriter(outputStream())
 
 @OptIn(ExperimentalUnsignedTypes::class)
-class CborWriter(@PublishedApi internal val outputStream: OutputStream) {
+class CborUnlimitedListWriter(@PublishedApi internal val outputStream: OutputStream) {
 
-  fun startUnlimitedArray() {
-	outputStream.write(byteArrayOf(CBOR_UNLIMITED_ARRAY_INITIAL_BYTE))
-  }
+    fun startUnlimitedArray() {
+        outputStream.write(byteArrayOf(CBOR_UNLIMITED_ARRAY_INITIAL_BYTE))
+    }
 
-  inline fun <reified T: Any> encodeAndWrite(o: T) = outputStream.writeAsCbor(o)
+    inline fun <reified T : Any> encodeAndWrite(o: T) = outputStream.writeAsCbor(o)
 
-  fun writeBreak() {
-	outputStream.write(ubyteArrayOf(CborBreak.uByte).toByteArray())
-  }
+    fun writeBreak() {
+        outputStream.write(ubyteArrayOf(CborBreak.uByte).toByteArray())
+    }
 
 
-  fun close() = outputStream.close()
+    fun close() = outputStream.close()
 
 }
+
+//fun MFile.cborObjectWriter() = CborObjectWriter(outputStream())
+//class CborObjectWriter(@PublishedApi internal val outputStream: OutputStream) {
+//    fun startObject(numFields: Int) {
+//        outputStream.write(
+//            byteArrayOf(
+//                InitialByte(
+//                    majorType = MAP,
+//                ).toByte()
+//            )
+//        )
+//    }
+//    fun close() = outputStream.close()
+//}

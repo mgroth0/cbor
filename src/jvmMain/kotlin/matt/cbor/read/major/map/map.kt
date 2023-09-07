@@ -95,7 +95,7 @@ class MapReader(head: HeadWithArgument) : IntArgTypeReader<CborMap<*, *>>(head) 
     }
 
 
-    private fun nextAndStoreBytes() = lendStream(CborItemReader()) {
+    fun nextAndStoreBytes() = lendStream(CborItemReader()) {
         readAndStoreBytes() to run {
             readAndStoreBytes()
         }

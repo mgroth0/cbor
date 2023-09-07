@@ -25,6 +25,8 @@ class InitialByte(
   fun toByte() = ((majorType.ordinal shl 5) or argumentCode.toInt()).toByte()
 }
 
+
+
 class HeadWithArgument(
   val initialByte: InitialByte,
   val extraBytes: ByteArray? = null
