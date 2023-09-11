@@ -9,6 +9,10 @@ import matt.model.op.convert.BytesConverter
 @OptIn(ExperimentalSerializationApi::class)
 class CborBytesConverter<T>(private val ser: KSerializer<T>) : BytesConverter<T> {
     override fun toBytes(t: T): ByteArray {
+//        TestCommonThreadObject
+//        TestCommonJvmAndroidThreadObject
+//        TestAndroidThreadObject
+//        TestJvmThreadObject
         return Cbor.encodeToByteArray(
             ser,
             t

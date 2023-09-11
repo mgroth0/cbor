@@ -1,35 +1,35 @@
 {
-    "type": "MultiPlatformModule",
-    "dependencies": [
-        {
-            "type": "Project",
-            "cfg": "commonMainImplementation",
-            "path": ":k:stream"
-        },
-        {
-            "type": "Project",
-            "cfg": "commonMainApi",
-            "path": ":k:file"
-        },
-        {
-            "type": "Lib",
-            "cfg": "commonMainApi",
-            "key": "kotlinx-serialization-cbor"
-        },
-        {
-            "type": "Project",
-            "cfg": "commonMainApi",
-            "path": ":k:reflect"
-        },
-        {
-            "type": "Project",
-            "cfg": "jvmTestImplementation",
-            "path": ":k:test"
-        }
-    ],
-    "jvm": {
+  "type": "MultiPlatformModule",
+  "dependencies": [
+    {
+      "type": "Project",
+      "cfg": "commonMainApi",
+      "path": ":k:stream"
     },
-    "js": {
-        "type": "lib"
+    {
+      "type": "Project",
+      "cfg": "commonMainApi",
+      "path": ":k:file"
+    },
+    {
+      "type": "Lib",
+      "cfg": "commonMainApi",
+      "key": "kotlinx-serialization-cbor"
+    },
+    {
+      "type": "Project",
+      "cfg": "commonMainApi",
+      "path": ":k:reflect"
+    },
+    {
+      "type": "Project",
+      "cfg": "jvmTestImplementation",
+      "path": ":k:test"
     }
+  ],
+  "jvm": {
+  },
+  "js": {
+    "type": "lib"
+  }
 }

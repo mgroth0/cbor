@@ -2,10 +2,10 @@ package matt.cbor.diag
 
 import matt.cbor.read.CborReader
 import matt.cbor.read.streamman.readCbor
-import matt.file.CborFile
+import matt.file.MFile
 import matt.log.SystemOutLogger
 
-fun CborFile.diagnose() {
+fun MFile.diagnoseCbor() {
   val stream = inputStream()
   val oldDefaultLogger = CborReader.defaultLogger
   CborReader.defaultLogger = SystemOutLogger.apply {

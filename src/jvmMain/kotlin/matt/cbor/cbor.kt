@@ -18,6 +18,10 @@ inline fun <reified T> OutputStream.writeAsCbor(any: T) = write(any.toCborEncode
 
 
 inline fun <reified T> MFile.loadCbor(): T {
+//    TestCommonThreadObject
+//    TestCommonJvmAndroidThreadObject
+//    TestAndroidThreadObject
+//    TestJvmThreadObject
     try {
         return readBytes().loadCbor()
     } catch (e: SerializationException) {
