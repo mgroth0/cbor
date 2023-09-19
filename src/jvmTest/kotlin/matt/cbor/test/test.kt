@@ -10,6 +10,7 @@ import matt.cbor.data.major.seven.CborTrue
 import matt.cbor.data.major.seven.CborUndefined
 import matt.cbor.data.major.tag.CborTag
 import matt.cbor.loadCbor
+import matt.lang.model.file.MacFileSystem
 import matt.lang.require.requireEquals
 import matt.test.JupiterTestAssertions.assertRunsInOneMinute
 import kotlin.test.Test
@@ -30,7 +31,9 @@ class CborTests {
     fun readCborFile() = assertRunsInOneMinute {
         val int = 5
         val byte = int.toByte()
-        val tempFile = matt.file.ext.createTempFile()
+        val tempFile = with(MacFileSystem) {
+            matt.file.ext.createTempFile()
+        }
         tempFile.bytes = byteArrayOf(byte)
         requireEquals(
             tempFile.loadCbor<Int>(), int

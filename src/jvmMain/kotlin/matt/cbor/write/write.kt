@@ -3,10 +3,10 @@ package matt.cbor.write
 import matt.cbor.data.head.CBOR_UNLIMITED_ARRAY_INITIAL_BYTE
 import matt.cbor.data.major.seven.CborBreak
 import matt.cbor.writeAsCbor
-import matt.file.MFile
+import matt.file.JioFile
 import java.io.OutputStream
 
-fun MFile.cborUnlimitedListWriter() = CborUnlimitedListWriter(outputStream())
+fun JioFile.cborUnlimitedListWriter() = CborUnlimitedListWriter(outputStream())
 
 @OptIn(ExperimentalUnsignedTypes::class)
 class CborUnlimitedListWriter(@PublishedApi internal val outputStream: OutputStream) {
@@ -26,7 +26,7 @@ class CborUnlimitedListWriter(@PublishedApi internal val outputStream: OutputStr
 
 }
 
-//fun MFile.cborObjectWriter() = CborObjectWriter(outputStream())
+//fun matt.file.JioFile.cborObjectWriter() = CborObjectWriter(outputStream())
 //class CborObjectWriter(@PublishedApi internal val outputStream: OutputStream) {
 //    fun startObject(numFields: Int) {
 //        outputStream.write(

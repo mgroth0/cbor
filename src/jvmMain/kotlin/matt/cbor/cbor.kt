@@ -7,7 +7,8 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.cbor.Cbor
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
-import matt.file.MFile
+import matt.file.JioFile
+import matt.file.ext.mkparents
 import matt.model.code.yes.YesIUse
 import matt.model.obj.text.WritableBytes
 import java.io.OutputStream
@@ -17,7 +18,7 @@ inline fun <reified T> T.toCborEncodedBytes() = Cbor.encodeToByteArray(this)
 inline fun <reified T> OutputStream.writeAsCbor(any: T) = write(any.toCborEncodedBytes())
 
 
-inline fun <reified T> MFile.loadCbor(): T {
+inline fun <reified T> JioFile.loadCbor(): T {
 //    TestCommonThreadObject
 //    TestCommonJvmAndroidThreadObject
 //    TestAndroidThreadObject
@@ -36,7 +37,7 @@ inline fun <reified T> ByteArray.loadCbor(): T = Cbor.decodeFromByteArray(this)
 
 object YesIUseCbor : YesIUse
 
-inline fun <reified T> MFile.loadOrSaveCbor(
+inline fun <reified T> JioFile.loadOrSaveCbor(
     forceRecreate: Boolean = false,
     op: () -> T
 ): T {
