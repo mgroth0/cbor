@@ -12,7 +12,7 @@ import matt.cbor.data.major.tag.CborTag
 import matt.cbor.loadCbor
 import matt.lang.model.file.MacFileSystem
 import matt.lang.require.requireEquals
-import matt.test.JupiterTestAssertions.assertRunsInOneMinute
+import matt.test.assertions.JupiterTestAssertions.assertRunsInOneMinute
 import kotlin.test.Test
 
 class CborTests {

@@ -9,12 +9,12 @@ import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 import matt.file.JioFile
 import matt.file.ext.mkparents
-import matt.model.code.yes.YesIUse
 import matt.model.obj.text.WritableBytes
+import matt.model.ser.ExternalSerializersModule
 import java.io.OutputStream
 
 
-inline fun <reified T> T.toCborEncodedBytes() = Cbor.encodeToByteArray(this)
+inline fun <reified T> T.toCborEncodedBytes(cbor: Cbor = MyCbor) = cbor.encodeToByteArray(this)
 inline fun <reified T> OutputStream.writeAsCbor(any: T) = write(any.toCborEncodedBytes())
 
 
@@ -32,27 +32,37 @@ inline fun <reified T> JioFile.loadCbor(): T {
 }
 
 
-inline fun <reified T> ByteArray.loadCbor(): T = Cbor.decodeFromByteArray(this)
+inline fun <reified T> ByteArray.loadCbor(
+    cbor: Cbor = MyCbor,
+): T = cbor.decodeFromByteArray(this)
 
-
-object YesIUseCbor : YesIUse
 
 inline fun <reified T> JioFile.loadOrSaveCbor(
     forceRecreate: Boolean = false,
+    cbor: Cbor = MyCbor,
     op: () -> T
 ): T {
     return if (!forceRecreate && exists()) {
         loadCbor()
     } else op().also {
         mkparents()
-        writeBytes(Cbor.encodeToByteArray(it))
+        writeBytes(cbor.encodeToByteArray(it))
     }
 }
 
 
-inline fun <reified T> WritableBytes.saveCbor(t: T) {
-    bytes = (Cbor.encodeToByteArray(t))
+inline fun <reified T> WritableBytes.saveCbor(
+    t: T,
+    cbor: Cbor = MyCbor,
+) {
+    bytes = (cbor.encodeToByteArray(t))
 }
 
 
 inline fun <reified T : Any> T.saveAsCborTo(f: WritableBytes) = f.saveCbor(this)
+
+val MyCbor by lazy {
+    Cbor {
+        serializersModule = ExternalSerializersModule
+    }
+}
