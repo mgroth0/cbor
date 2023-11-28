@@ -13,7 +13,7 @@ import matt.cbor.read.item.isNotBreak
 import matt.cbor.read.major.IntArgTypeReader
 import matt.cbor.read.major.MajorTypeReader
 import matt.lang.NOT_IMPLEMENTED
-import matt.lang.require.requireEquals
+import matt.lang.assertions.require.requireEquals
 import matt.reflect.tostring.toStringBuilder
 
 class MapReader(head: HeadWithArgument) : IntArgTypeReader<CborMap<*, *>>(head) {

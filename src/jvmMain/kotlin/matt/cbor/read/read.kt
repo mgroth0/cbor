@@ -5,9 +5,9 @@ import matt.cbor.read.item.MightBeBreak
 import matt.cbor.read.streamman.ByteStoringStreamMan
 import matt.cbor.read.streamman.CborStreamManager
 import matt.cbor.read.streamman.CountingCborStreamMan
-import matt.lang.require.requireGreaterThan
-import matt.lang.require.requireLessThanOrEqualTo
-import matt.lang.require.requireNot
+import matt.lang.assertions.require.requireGreaterThan
+import matt.lang.assertions.require.requireLessThanOrEqualTo
+import matt.lang.assertions.require.requireNot
 import matt.log.logger.Logger
 import matt.model.obj.info.HasInfo
 import matt.prim.byte.reasonablePrintableString

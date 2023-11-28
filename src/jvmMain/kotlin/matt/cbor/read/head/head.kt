@@ -16,7 +16,7 @@ import matt.cbor.log.INDENT
 import matt.cbor.read.CborReadResultWithBytes
 import matt.cbor.read.CborReaderTyped
 import matt.lang.pattern.lt
-import matt.lang.require.requireNot
+import matt.lang.assertions.require.requireNot
 import matt.prim.str.times
 
 /*https://www.rfc-editor.org/rfc/rfc8949.html#section-3*/
