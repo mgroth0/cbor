@@ -10,14 +10,14 @@ import matt.cbor.data.major.seven.CborTrue
 import matt.cbor.data.major.seven.CborUndefined
 import matt.cbor.data.major.tag.CborTag
 import matt.cbor.loadCbor
-import matt.lang.model.file.MacFileSystem
 import matt.lang.assertions.require.requireEquals
-import matt.test.assertions.JupiterTestAssertions.assertRunsInOneMinute
+import matt.lang.model.file.MacFileSystem
+import matt.test.Tests
 import kotlin.test.Test
 
-class CborTests {
+class CborTests: Tests() {
     @Test
-    fun testReadUnsignedInt() = assertRunsInOneMinute {
+    fun testReadUnsignedInt() {
         val int = 5
         val byte = int.toByte()
         val loadedInt = byteArrayOf(byte).loadCbor<Int>()
@@ -28,7 +28,7 @@ class CborTests {
     }
 
     @Test
-    fun readCborFile() = assertRunsInOneMinute {
+    fun readCborFile() {
         val int = 5
         val byte = int.toByte()
         val tempFile = with(MacFileSystem) {
@@ -41,7 +41,7 @@ class CborTests {
     }
 
     @Test
-    fun initObjects() = assertRunsInOneMinute {
+    fun initObjects() {
         CborFalse
         CborTrue
         CborUndefined
@@ -49,7 +49,7 @@ class CborTests {
     }
 
     @Test
-    fun instantiateClasses() = assertRunsInOneMinute {
+    fun instantiateClasses() {
         CborArray(listOf(CborFloat(1f)))
         CborTag(ULong.MIN_VALUE, CborDouble(1.0))
     }
