@@ -41,7 +41,7 @@ class CborItemReader : CborReaderTyped<CborDataItem<*>>() {
     }
 
 
-    @SeeURL("https://youtrack.jetbrains.com/issue/KT-63414/K2-Contracts-false-positive-Result-has-wrong-invocation-kind-when-invoking-a-function-returning-a-value-with-contract")
+    @SeeURL("https://youtrack.jetbrains.com/issue/KT-65158/K2-Contracts-False-positive-WRONGINVOCATIONKIND-with-unrelated-higher-order-function-call")
     @Suppress("WRONG_INVOCATION_KIND")
     inline fun <reified RD : MajorTypeReader<*>, R> readManually(op: RD.() -> R): R {
         contract {

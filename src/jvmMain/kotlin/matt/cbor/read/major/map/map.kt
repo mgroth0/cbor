@@ -14,7 +14,7 @@ import matt.cbor.read.major.IntArgTypeReader
 import matt.cbor.read.major.MajorTypeReader
 import matt.lang.NOT_IMPLEMENTED
 import matt.lang.assertions.require.requireEquals
-import matt.reflect.tostring.toStringBuilder
+import matt.reflect.tostring.PropReflectingStringableClass
 
 class MapReader(head: HeadWithArgument) : IntArgTypeReader<CborMap<*, *>>(head) {
 
@@ -215,6 +215,6 @@ class MapReader(head: HeadWithArgument) : IntArgTypeReader<CborMap<*, *>>(head) 
 class Entry<K, V>(
     val key: K,
     val value: V
-) {
-    override fun toString() = toStringBuilder(::key, ::value)
+): PropReflectingStringableClass() {
+    override fun reflectingToStringProps() = setOf(::key, ::value)
 }

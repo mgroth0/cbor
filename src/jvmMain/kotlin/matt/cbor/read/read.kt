@@ -8,12 +8,12 @@ import matt.cbor.read.streamman.CountingCborStreamMan
 import matt.lang.assertions.require.requireGreaterThan
 import matt.lang.assertions.require.requireLessThanOrEqualTo
 import matt.lang.assertions.require.requireNot
+import matt.lang.tostring.SimpleStringableClass
 import matt.log.logger.Logger
 import matt.model.obj.info.HasInfo
 import matt.prim.byte.reasonablePrintableString
 import matt.prim.str.times
 import matt.prim.str.truncateWithElipses
-import matt.reflect.tostring.toStringBuilder
 import kotlin.contracts.contract
 
 interface CborReadResult : HasInfo, MightBeBreak
@@ -85,7 +85,7 @@ abstract class CborReaderTyped<R : CborReadResult> {
 
     fun readNBytes(len: Int) = streamMan!!.readNBytes(len)
     protected fun readNBytes(len: ULong): ByteArray {
-        requireLessThanOrEqualTo(len , Int.MAX_VALUE.toUInt())
+        requireLessThanOrEqualTo(len, Int.MAX_VALUE.toUInt())
         return readNBytes(len.toInt())
     }
 
@@ -120,8 +120,8 @@ abstract class CborReaderTyped<R : CborReadResult> {
 class CborReadResultWithBytes<R : CborReadResult>(
     val result: R,
     val bytes: ByteArray
-) : MightBeBreak by result {
-    override fun toString() = toStringBuilder(
+) : SimpleStringableClass(), MightBeBreak by result {
+    override fun toStringProps() = mapOf(
         "bytes" to bytes.reasonablePrintableString(),
         "result" to result
     )

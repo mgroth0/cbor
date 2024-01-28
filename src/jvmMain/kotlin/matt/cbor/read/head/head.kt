@@ -15,8 +15,8 @@ import matt.cbor.err.parserBug
 import matt.cbor.log.INDENT
 import matt.cbor.read.CborReadResultWithBytes
 import matt.cbor.read.CborReaderTyped
-import matt.lang.pattern.lt
 import matt.lang.assertions.require.requireNot
+import matt.lang.pattern.lt
 import matt.prim.str.times
 
 /*https://www.rfc-editor.org/rfc/rfc8949.html#section-3*/
@@ -47,7 +47,7 @@ class HeadReader(private val initialByte: InitialByte) : CborReaderTyped<HeadWit
 
         when (initialByte.majorType) {
             SPECIAL_OR_FLOAT                                   -> Unit
-            POS_OR_U_INT, N_INT, BYTE_STRING, TEXT_STRING, TAG -> logger?.printNoNewline("$anno: ")
+            POS_OR_U_INT, N_INT, BYTE_STRING, TEXT_STRING, TAG -> logger?.print("$anno: ")
 
             ARRAY, MAP                                         -> logger?.log(anno)
 
