@@ -8,12 +8,8 @@ import matt.cbor.read.major.IntArgTypeReader
 class PosOrUIntReader(head: HeadWithArgument): IntArgTypeReader<CborUInt>(head) {
 
 
-  override fun readImpl(): CborUInt {
-	return CborUInt(raw = count)
-  }
+    override fun readImpl(): CborUInt = CborUInt(raw = count)
 
-  override fun readAndStoreBytes(): CborReadResultWithBytes<CborUInt> {
-	return CborReadResultWithBytes(readImpl(), byteArrayOf())
-  }
+    override fun readAndStoreBytes(): CborReadResultWithBytes<CborUInt> = CborReadResultWithBytes(readImpl(), byteArrayOf())
 
 }

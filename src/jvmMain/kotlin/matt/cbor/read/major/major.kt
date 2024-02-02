@@ -22,7 +22,7 @@ abstract class IntArgTypeReader<D : CborDataItem<*>>(head: HeadWithArgument) : M
             27         -> ByteBuffer.wrap(head.extraBytes!!).long.toULong()
             28, 29, 30 -> NOT_WELL_FORMED
             31         -> null
-            else       -> parserBug("argumentCode=${code}, which should never happen")
+            else       -> parserBug("argumentCode=$code, which should never happen")
         }
     }
     val hasCount = argumentValue != null

@@ -7,9 +7,7 @@ import matt.cbor.read.item.CborItemReader
 import matt.cbor.read.major.IntArgTypeReader
 
 class TagReader(head: HeadWithArgument) : IntArgTypeReader<CborTag<*>>(head) {
-    override fun readImpl(): CborTag<*> {
-        return CborTag(tagValue = count, content = lendStream(CborItemReader()) { read() })
-    }
+    override fun readImpl(): CborTag<*> = CborTag(tagValue = count, content = lendStream(CborItemReader()) { read() })
 
     override fun readAndStoreBytes(): CborReadResultWithBytes<CborTag<*>> {
         val r = lendStream(CborItemReader()) { readAndStoreBytes() }

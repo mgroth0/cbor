@@ -7,8 +7,8 @@ import matt.prim.int.nulong.NULong
 /*so keep the value private for now*/
 /*probably will never use this anyway*/
 class CborNegInt(private val argumentValue: ULong): CborDataItem<NULong> {
-  override fun info() = realValue.toString()
-  override val raw by lazy { NULong(argumentValue) }
-  val realValue by lazy { raw.realValue }
-  override val isBreak get() = false
+    override fun info() = realValue.toString()
+    override val raw by lazy { NULong(argumentValue) }
+    val realValue by lazy { raw.realValue }
+    override val isBreak get() = false
 }

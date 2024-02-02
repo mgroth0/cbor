@@ -15,23 +15,21 @@ import matt.model.obj.info.HasInfo
 import kotlin.reflect.KClass
 
 interface CborDataItem<T>: CborReadResult, HasInfo {
-  val raw: T
+    val raw: T
 }
 
 /*https://www.rfc-editor.org/rfc/rfc8949.html#name-major-types*/
 enum class MajorType(private val readerCls: KClass<out MajorTypeReader<*>>, val label: String) {
-  POS_OR_U_INT(PosOrUIntReader::class, "int"),
-  N_INT(NegIntReader::class, "-int"),
-  BYTE_STRING(ByteStringReader::class, "bytes"),
-  TEXT_STRING(TextStringReader::class, "text"),
-  ARRAY(ArrayReader::class, "array"),
-  MAP(MapReader::class, "map"),
-  TAG(TagReader::class, "tag"),
-  SPECIAL_OR_FLOAT(SpecialOrFloatReader::class, "special/float");
+    POS_OR_U_INT(PosOrUIntReader::class, "int"),
+    N_INT(NegIntReader::class, "-int"),
+    BYTE_STRING(ByteStringReader::class, "bytes"),
+    TEXT_STRING(TextStringReader::class, "text"),
+    ARRAY(ArrayReader::class, "array"),
+    MAP(MapReader::class, "map"),
+    TAG(TagReader::class, "tag"),
+    SPECIAL_OR_FLOAT(SpecialOrFloatReader::class, "special/float");
 
-  fun reader(headWithArgument: HeadWithArgument): MajorTypeReader<*> {
-	return readerCls.constructors.first().call(headWithArgument)
-  }
+    fun reader(headWithArgument: HeadWithArgument): MajorTypeReader<*> = readerCls.constructors.first().call(headWithArgument)
 }
 
 

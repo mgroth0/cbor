@@ -6,10 +6,6 @@ import matt.cbor.read.CborReadResultWithBytes
 import matt.cbor.read.major.IntArgTypeReader
 
 class NegIntReader(head: HeadWithArgument): IntArgTypeReader<CborNegInt>(head) {
-  override fun readImpl(): CborNegInt {
-	return CborNegInt(argumentValue = count)
-  }
-  override fun readAndStoreBytes(): CborReadResultWithBytes<CborNegInt> {
-	return CborReadResultWithBytes(readImpl(), byteArrayOf())
-  }
+    override fun readImpl(): CborNegInt = CborNegInt(argumentValue = count)
+    override fun readAndStoreBytes(): CborReadResultWithBytes<CborNegInt> = CborReadResultWithBytes(readImpl(), byteArrayOf())
 }

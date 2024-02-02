@@ -24,12 +24,10 @@ class CborBytesConverter<T>(private val ser: KSerializer<T>) : BytesConverter<T>
         )
     }
 
-    override fun fromBytes(s: ByteArray): T {
-        return Cbor.decodeFromByteArray(
-            ser,
-            s
-        )
-    }
+    override fun fromBytes(s: ByteArray): T = Cbor.decodeFromByteArray(
+        ser,
+        s
+    )
 
 }
 

@@ -35,7 +35,7 @@ class HeadReader(private val initialByte: InitialByte) : CborReaderTyped<HeadWit
             27                   -> HeadWithArgument(initialByte, readNBytes(8))
             28, 29, 30           -> NOT_WELL_FORMED
             CBOR_UNLIMITED_COUNT -> HeadWithArgument(initialByte)
-            else                 -> parserBug("argumentCode=${code}, which should never happen")
+            else                 -> parserBug("argumentCode=$code, which should never happen")
         }
     }
 

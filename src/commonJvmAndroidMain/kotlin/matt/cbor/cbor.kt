@@ -31,13 +31,11 @@ inline fun <reified T> JioFile.loadOrSaveCbor(
     forceRecreate: Boolean = false,
     cbor: Cbor = MyCbor,
     op: () -> T
-): T {
-    return if (!forceRecreate && exists()) {
-        loadCbor()
-    } else op().also {
-        mkparents()
-        writeBytes(cbor.encodeToByteArray(it))
-    }
+): T = if (!forceRecreate && exists()) {
+    loadCbor()
+} else op().also {
+    mkparents()
+    writeBytes(cbor.encodeToByteArray(it))
 }
 
 
