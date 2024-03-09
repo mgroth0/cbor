@@ -11,5 +11,4 @@ class PosOrUIntReader(head: HeadWithArgument): IntArgTypeReader<CborUInt>(head) 
     override fun readImpl(): CborUInt = CborUInt(raw = count)
 
     override fun readAndStoreBytes(): CborReadResultWithBytes<CborUInt> = CborReadResultWithBytes(readImpl(), byteArrayOf())
-
 }

@@ -32,47 +32,45 @@ class HeadWithArgument(
     val extraBytes: ByteArray? = null
 ): HasInitialByte by initialByte, CborReadResult {
 
-    override fun info(): String = when {
-        isBreak -> "BREAK"
-        else    -> {
-            val argumentString = when {
-                argumentCode.toInt() == 31 -> "?"
-                else                       -> argumentCode.toString()
-            }
-
-            val extraBytesString = extraBytes?.let {
-                " + ${
-                    it.joinToString(prefix = "[", postfix = "]") {
-                        it.toInt().toString()
+    override fun info(): String =
+        when {
+            isBreak -> "BREAK"
+            else    -> {
+                val argumentString =
+                    when {
+                        argumentCode.toInt() == 31 -> "?"
+                        else                       -> argumentCode.toString()
                     }
-                }"
-            } ?: ""
 
-            "${majorType.label}($argumentString$extraBytesString)"
-		/*when {
-		  majorType == SPECIAL_OR_FLOAT -> ""*//*SpecialOrFloatReader(this).readWithoutPrinting().infoString()*//*
-		  else                          -> "${majorType.label}($argumentString${extraBytesString})"
-		}*/
+                val extraBytesString =
+                    extraBytes?.let {
+                        " + ${
+                            it.joinToString(prefix = "[", postfix = "]") {
+                                it.toInt().toString()
+                            }
+                        }"
+                    } ?: ""
 
-
+                "${majorType.label}($argumentString$extraBytesString)"
+            }
         }
-    }
 
     override val isBreak: Boolean
         get() {
-            if (this.majorType != SPECIAL_OR_FLOAT) return false
+            if (majorType != SPECIAL_OR_FLOAT) return false
             return argumentCode == CborBreak.argumentCodeByte
         }
 
     val numBytes = 1 + (extraBytes?.size ?: 0)
 }
 
-fun predictHeadSizeForCount(count: Int) = when {
-    count <= 23     -> 1 + 0
-    count <= 255    -> 1 + 1
-    count <= 65_535 -> 1 + 2
-    else            -> 1 + 4
-} + count
+fun predictHeadSizeForCount(count: Int) =
+    when {
+        count <= 23     -> 1 + 0
+        count <= 255    -> 1 + 1
+        count <= 65_535 -> 1 + 2
+        else            -> 1 + 4
+    } + count
 
 
 val CBOR_UNLIMITED_ARRAY_INITIAL_BYTE by lazy {

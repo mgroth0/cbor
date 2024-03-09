@@ -13,18 +13,20 @@ import java.nio.ByteBuffer
 abstract class MajorTypeReader<D : CborDataItem<*>>(val head: HeadWithArgument) : CborReaderTyped<D>()
 
 abstract class IntArgTypeReader<D : CborDataItem<*>>(head: HeadWithArgument) : MajorTypeReader<D>(head) {
-    val argumentValue = when {
-        head.argumentCode < 24 -> head.argumentCode.toUByte()
-        else                   -> when (val code = head.argumentCode.toInt()) {
-            24         -> ByteBuffer.wrap(head.extraBytes!!).get().toUByte()
-            25         -> ByteBuffer.wrap(head.extraBytes!!).short.toUShort()
-            26         -> ByteBuffer.wrap(head.extraBytes!!).int.toUInt()
-            27         -> ByteBuffer.wrap(head.extraBytes!!).long.toULong()
-            28, 29, 30 -> NOT_WELL_FORMED
-            31         -> null
-            else       -> parserBug("argumentCode=$code, which should never happen")
+    val argumentValue =
+        when {
+            head.argumentCode < 24 -> head.argumentCode.toUByte()
+            else                   ->
+                when (val code = head.argumentCode.toInt()) {
+                    24         -> ByteBuffer.wrap(head.extraBytes!!).get().toUByte()
+                    25         -> ByteBuffer.wrap(head.extraBytes!!).short.toUShort()
+                    26         -> ByteBuffer.wrap(head.extraBytes!!).int.toUInt()
+                    27         -> ByteBuffer.wrap(head.extraBytes!!).long.toULong()
+                    28, 29, 30 -> NOT_WELL_FORMED
+                    31         -> null
+                    else       -> parserBug("argumentCode=$code, which should never happen")
+                }
         }
-    }
     val hasCount = argumentValue != null
     val count by lazy {
         when (argumentValue) {
@@ -42,7 +44,6 @@ abstract class IntArgTypeReader<D : CborDataItem<*>>(head: HeadWithArgument) : M
         if (count != expected) {
             throw UnexpectedCountException(expected = expected, received = count)
         }
-
     }
 
     fun expectCount(range: IntRange) = expectCount(range.start.toULong()..range.endInclusive.toULong())

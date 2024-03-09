@@ -5,11 +5,14 @@ import matt.cbor.data.major.seven.CborBreak
 import matt.cbor.writeAsCbor
 import matt.file.JioFile
 import java.io.OutputStream
+import kotlin.io.path.outputStream
 
 fun JioFile.cborUnlimitedListWriter() = CborUnlimitedListWriter(outputStream())
 
 @OptIn(ExperimentalUnsignedTypes::class)
-class CborUnlimitedListWriter(@PublishedApi internal val outputStream: OutputStream) {
+class CborUnlimitedListWriter(
+    @PublishedApi internal val outputStream: OutputStream
+) {
 
     fun startUnlimitedArray() {
         outputStream.write(byteArrayOf(CBOR_UNLIMITED_ARRAY_INITIAL_BYTE))
@@ -23,19 +26,4 @@ class CborUnlimitedListWriter(@PublishedApi internal val outputStream: OutputStr
 
 
     fun close() = outputStream.close()
-
 }
-
-//fun matt.file.JioFile.cborObjectWriter() = CborObjectWriter(outputStream())
-//class CborObjectWriter(@PublishedApi internal val outputStream: OutputStream) {
-//    fun startObject(numFields: Int) {
-//        outputStream.write(
-//            byteArrayOf(
-//                InitialByte(
-//                    majorType = MAP,
-//                ).toByte()
-//            )
-//        )
-//    }
-//    fun close() = outputStream.close()
-//}

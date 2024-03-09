@@ -50,7 +50,6 @@ class HeadReader(private val initialByte: InitialByte) : CborReaderTyped<HeadWit
             POS_OR_U_INT, N_INT, BYTE_STRING, TEXT_STRING, TAG -> logger?.print("$anno: ")
 
             ARRAY, MAP                                         -> logger?.log(anno)
-
         }
     }
 

@@ -3,7 +3,7 @@ package matt.cbor.read.streamman
 import matt.cbor.data.major.CborDataItem
 import matt.cbor.data.major.seven.CborBreak
 import matt.cbor.read.item.CborItemReader
-import matt.lang.NOT_IMPLEMENTED
+import matt.lang.common.NOT_IMPLEMENTED
 import matt.stream.readOrNullIfEOF
 import java.io.BufferedInputStream
 import java.io.InputStream
@@ -33,7 +33,7 @@ open class CborStreamManager internal constructor(stream: InputStream) {
     open fun readOrNullIfEOF() = stream.readOrNullIfEOF()
 
 
-    open fun readNBytes(len: Int) = stream.readNBytes(len) /*WARN: UNDEFINED BEHAVIOR IF EOF IS REACHED*/
+    open fun readNBytes(len: Int): ByteArray = stream.readNBytes(len) /*WARN: UNDEFINED BEHAVIOR IF EOF IS REACHED*/
 
     protected open fun readUntilBreak(): List<Byte> {
         val bytes = mutableListOf<Byte>()
@@ -48,7 +48,6 @@ open class CborStreamManager internal constructor(stream: InputStream) {
 
     fun counter() = CountingCborStreamMan(stream, this)
     fun storing() = ByteStoringStreamMan(stream, this)
-
 }
 
 class CountingCborStreamMan internal constructor(stream: InputStream, val parent: CborStreamManager):
@@ -65,9 +64,10 @@ class CountingCborStreamMan internal constructor(stream: InputStream, val parent
         }
 
         @Synchronized
-        override fun readOrNullIfEOF(): Int? = super.readOrNullIfEOF()?.also {
-            numBytesRead += 1
-        }
+        override fun readOrNullIfEOF(): Int? =
+            super.readOrNullIfEOF()?.also {
+                numBytesRead += 1
+            }
 
         @Synchronized override fun readNBytes(len: Int): ByteArray {
             numBytesRead += len
@@ -75,7 +75,6 @@ class CountingCborStreamMan internal constructor(stream: InputStream, val parent
         }
 
         override fun readUntilBreak() = NOT_IMPLEMENTED
-
     }
 
 class ByteStoringStreamMan internal constructor(stream: InputStream, val parent: CborStreamManager):
@@ -86,14 +85,16 @@ class ByteStoringStreamMan internal constructor(stream: InputStream, val parent:
             private set
 
         @Synchronized
-        override fun read(): Int = super.read().also {
-            bytes += it.toByte()
-        }
+        override fun read(): Int =
+            super.read().also {
+                bytes += it.toByte()
+            }
 
         @Synchronized
-        override fun readOrNullIfEOF(): Int? = super.readOrNullIfEOF()?.also {
-            bytes += it.toByte()
-        }
+        override fun readOrNullIfEOF(): Int? =
+            super.readOrNullIfEOF()?.also {
+                bytes += it.toByte()
+            }
 
         @Synchronized override fun readNBytes(len: Int): ByteArray {
             return super.readNBytes(len).also {
@@ -102,5 +103,4 @@ class ByteStoringStreamMan internal constructor(stream: InputStream, val parent:
         }
 
         override fun readUntilBreak() = NOT_IMPLEMENTED
-
     }

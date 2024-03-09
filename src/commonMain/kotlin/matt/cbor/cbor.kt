@@ -13,22 +13,17 @@ import matt.model.ser.ExternalSerializersModule
 
 @OptIn(ExperimentalSerializationApi::class)
 class CborBytesConverter<T>(private val ser: KSerializer<T>) : BytesConverter<T> {
-    override fun toBytes(t: T): ByteArray {
-//        TestCommonThreadObject
-//        TestCommonJvmAndroidThreadObject
-//        TestAndroidThreadObject
-//        TestJvmThreadObject
-        return Cbor.encodeToByteArray(
+    override fun toBytes(t: T): ByteArray =
+        Cbor.encodeToByteArray(
             ser,
             t
         )
-    }
 
-    override fun fromBytes(s: ByteArray): T = Cbor.decodeFromByteArray(
-        ser,
-        s
-    )
-
+    override fun fromBytes(s: ByteArray): T =
+        Cbor.decodeFromByteArray(
+            ser,
+            s
+        )
 }
 
 
@@ -36,7 +31,7 @@ class CborBytesConverter<T>(private val ser: KSerializer<T>) : BytesConverter<T>
 
 
 inline fun <reified T> ByteArray.loadCbor(
-    cbor: Cbor = MyCbor,
+    cbor: Cbor = MyCbor
 ): T = cbor.decodeFromByteArray(this)
 
 
@@ -52,7 +47,7 @@ inline fun <reified T> T.toCborEncodedBytes(cbor: Cbor = MyCbor) = cbor.encodeTo
 
 inline fun <reified T> WritableBytes.saveCbor(
     t: T,
-    cbor: Cbor = MyCbor,
+    cbor: Cbor = MyCbor
 ) {
     bytes = (cbor.encodeToByteArray(t))
 }

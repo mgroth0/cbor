@@ -11,17 +11,9 @@ abstract class MyCborSerializer<T: Any>(private val cls: KClass<*>): KSerializer
 
     fun canSerialize(value: Any): Boolean = value::class.isSubclassOf(cls)
     final override val descriptor: SerialDescriptor = buildClassSerialDescriptor(cls.qualifiedName!!)
-    //  final override fun deserialize(decoder: Decoder): T {
-    //
-    //  }
-    //  final override fun serialize(encoder: Encoder, value: T) {
-    //
-    //  }
 
 
   /*abstract fun deserialize(jsonElement: JsonElement): T
   abstract fun serialize(value: T): JsonElement
   fun castAndSerialize(value: Any): JsonElement*/
-
-
 }

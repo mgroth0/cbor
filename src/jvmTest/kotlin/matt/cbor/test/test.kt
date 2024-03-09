@@ -24,16 +24,16 @@ class CborTests: Tests() {
         requireEquals(
             loadedInt, int
         )
-
     }
 
     @Test
     fun readCborFile() {
         val int = 5
         val byte = int.toByte()
-        val tempFile = with(MacFileSystem) {
-            matt.file.ext.createTempFile()
-        }
+        val tempFile =
+            with(MacFileSystem) {
+                matt.file.ext.j.createTempFile()
+            }
         tempFile.bytes = byteArrayOf(byte)
         requireEquals(
             tempFile.loadCbor<Int>(), int

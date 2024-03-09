@@ -1,7 +1,7 @@
 package matt.cbor.data.major.seven
 
 import matt.cbor.data.major.CborDataItem
-import matt.lang.Undefined
+import matt.lang.common.Undefined
 import matt.reflect.tostring.PropReflectingStringableClass
 
 sealed interface CborFloatOrSimpleValue<T> : CborDataItem<T>
@@ -32,18 +32,12 @@ class CborFloat(override val raw: Float) : PropReflectingStringableClass(), Cbor
     override fun info() = "float: $raw"
     override fun reflectingToStringProps() = setOf(::raw)
     override val isBreak get() = false
-    //  override fun infoString(): String {
-    //	return "float: $raw"
-    //  }
 }
 
 class CborDouble(override val raw: Double) : PropReflectingStringableClass(), CborFloatOrSimpleValue<Double> {
     override fun info() = "double: $raw"
     override fun reflectingToStringProps() = setOf(::raw)
     override val isBreak get() = false
-    //  override fun infoString(): String {
-    //	return "double: $raw"
-    //  }
 }
 
 
@@ -58,7 +52,4 @@ object CborBreak : CborFloatOrSimpleValue<Unit> {
     override fun info() = "Cbor break is not a data item!"
     override fun toString() = "CborBreak"
     override val isBreak = true
-    //  override fun infoString(): String {
-    //	return "BREAK"
-    //  }
 }

@@ -14,6 +14,7 @@ import matt.model.obj.info.HasInfo
 import matt.prim.byte.reasonablePrintableString
 import matt.prim.str.times
 import matt.prim.str.truncateWithElipses
+import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 interface CborReadResult : HasInfo, MightBeBreak
@@ -42,9 +43,10 @@ abstract class CborReaderTyped<R : CborReadResult> {
     }
 
     fun readWithoutPrinting() = readImpl()
-    open fun read(): R = readImpl().also {
-        printReadInfo(it)
-    }
+    open fun read(): R =
+        readImpl().also {
+            printReadInfo(it)
+        }
 
     abstract fun readAndStoreBytes(): CborReadResultWithBytes<out R>
 
@@ -68,7 +70,7 @@ abstract class CborReaderTyped<R : CborReadResult> {
         op: C.() -> RR
     ): RR {
         contract {
-            callsInPlace(op, kotlin.contracts.InvocationKind.EXACTLY_ONCE)
+            callsInPlace(op, InvocationKind.EXACTLY_ONCE)
         }
         transferStreamTo(reader)
         reader.indent = indent + 1
@@ -77,11 +79,12 @@ abstract class CborReaderTyped<R : CborReadResult> {
         return r
     }
 
-    protected fun readByte() = streamMan!!.read().also {
-        requireGreaterThan(it, -1) {
-            "unexpectedly reached end of stream"
+    protected fun readByte() =
+        streamMan!!.read().also {
+            requireGreaterThan(it, -1) {
+                "unexpectedly reached end of stream"
+            }
         }
-    }
 
     fun readNBytes(len: Int) = streamMan!!.readNBytes(len)
     protected fun readNBytes(len: ULong): ByteArray {
@@ -113,7 +116,6 @@ abstract class CborReaderTyped<R : CborReadResult> {
         streamMan = counter.parent
         return counter.bytes
     }
-
 }
 
 
@@ -121,10 +123,11 @@ class CborReadResultWithBytes<R : CborReadResult>(
     val result: R,
     val bytes: ByteArray
 ) : SimpleStringableClass(), MightBeBreak by result {
-    override fun toStringProps() = mapOf(
-        "bytes" to bytes.reasonablePrintableString(),
-        "result" to result
-    )
+    override fun toStringProps() =
+        mapOf(
+            "bytes" to bytes.reasonablePrintableString(),
+            "result" to result
+        )
 }
 
 fun <RD : CborReaderTyped<R>, R : CborReadResult, RR> RD.withByteCounter(op: RD.() -> RR): Pair<RR, Int> {

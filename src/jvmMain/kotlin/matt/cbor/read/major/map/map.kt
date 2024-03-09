@@ -12,8 +12,8 @@ import matt.cbor.read.item.MightBeBreak
 import matt.cbor.read.item.isNotBreak
 import matt.cbor.read.major.IntArgTypeReader
 import matt.cbor.read.major.MajorTypeReader
-import matt.lang.NOT_IMPLEMENTED
 import matt.lang.assertions.require.requireEquals
+import matt.lang.common.NOT_IMPLEMENTED
 import matt.reflect.tostring.PropReflectingStringableClass
 
 class MapReader(head: HeadWithArgument) : IntArgTypeReader<CborMap<*, *>>(head) {
@@ -44,29 +44,33 @@ class MapReader(head: HeadWithArgument) : IntArgTypeReader<CborMap<*, *>>(head) 
         }*/
     }
 
-    fun next() = lendStream(CborItemReader()) {
-        read() to run {
-            read()
+    fun next() =
+        lendStream(CborItemReader()) {
+            read() to
+                run {
+                    read()
+                }
         }
-    }
 
-    inline fun <reified T> nextKeyOrValueOnly() = lendStream(CborItemReader()) {
-        val r = read().raw
-        if (r !is T) {
-            if (r == null) {
-                throw UnexpectedNullException()
-            } else {
-                throw UnexpectedTypeException(expected = T::class, received = r::class)
+    inline fun <reified T> nextKeyOrValueOnly() =
+        lendStream(CborItemReader()) {
+            val r = read().raw
+            if (r !is T) {
+                if (r == null) {
+                    throw UnexpectedNullException()
+                } else {
+                    throw UnexpectedTypeException(expected = T::class, received = r::class)
+                }
             }
+            r
         }
-        r
-    }
 
-    inline fun <reified T> nextKeyOrValueOnly(requireIs: T) = lendStream(CborItemReader()) {
-        val k = read().raw as T
-        requireEquals(k, requireIs)
-        k
-    }
+    inline fun <reified T> nextKeyOrValueOnly(requireIs: T) =
+        lendStream(CborItemReader()) {
+            val k = read().raw as T
+            requireEquals(k, requireIs)
+            k
+        }
 
 
     inline fun <reified T> nextValue(requireKeyIs: Any): T {
@@ -95,32 +99,27 @@ class MapReader(head: HeadWithArgument) : IntArgTypeReader<CborMap<*, *>>(head) 
     }
 
 
-    fun nextAndStoreBytes() = lendStream(CborItemReader()) {
-        readAndStoreBytes() to run {
-            readAndStoreBytes()
+    fun nextAndStoreBytes() =
+        lendStream(CborItemReader()) {
+            readAndStoreBytes() to
+                run {
+                    readAndStoreBytes()
+                }
         }
-    }
 
     override fun readAndStoreBytes(): CborReadResultWithBytes<CborMap<Any?, Any?>> {
 
-        //	val seq = readAsSequenceWithBytes()    //	println("In Cbor Map Reader ${hashCode()}")
         /*used to to seq.toList() but that led to a stack overflow exception!!??*/
         val itemsWithBytes = readAsSequenceWithBytes().toList()
 
 
-        //	  LinkedList<Entry<CborReadResultWithBytes<CborDataItem<*>>, CborReadResultWithBytes<CborDataItem<*>>>>()
-        //	for (it in seq) {
-        //	  itemsWithBytes += it
-        ////	  println("it=${it}")
-        //	}
-
-
         var bytes = byteArrayOf()
-        val data = (itemsWithBytes).associate {
-            bytes += it.key.bytes
-            bytes += it.value.bytes
-            it.key.result to it.value.result
-        }
+        val data =
+            (itemsWithBytes).associate {
+                bytes += it.key.bytes
+                bytes += it.value.bytes
+                it.key.result to it.value.result
+            }
 
         if (!hasCount) bytes += CborBreak.byte
 
@@ -128,7 +127,6 @@ class MapReader(head: HeadWithArgument) : IntArgTypeReader<CborMap<*, *>>(head) 
         val cborMap = CborMap(data)
 
 
-        //	r.appl
         return CborReadResultWithBytes(cborMap, bytes)
 
         /*
@@ -151,7 +149,6 @@ class MapReader(head: HeadWithArgument) : IntArgTypeReader<CborMap<*, *>>(head) 
             } ?: run {
               TODO()
             }*/
-
     }
 
     fun readAsSequence() = readAsSequenceBase({ read() }, { read() })
@@ -167,39 +164,35 @@ class MapReader(head: HeadWithArgument) : IntArgTypeReader<CborMap<*, *>>(head) 
     private inline fun <K : MightBeBreak, V> readAsSequenceBase(
         crossinline keyReadOp: CborItemReader.() -> K,
         crossinline valueReadOp: CborItemReader.() -> V
-    ): Sequence<Entry<K, V>> = sequence {
-        if (hasCount) range.map {
-            val k = lendStream(CborItemReader()) {
-                keyReadOp()
-            }
-            val v = lendStream(CborItemReader()) {
-                valueReadOp()
-            }
-            yield(Entry(key = k, value = v))
-        } else {
-            do {
-
-                //		val keyReader = CborItemReader()
-                //		val isBreak = lendStream(keyReader) {
-                //		  isBreak()
-                //		}
-                //		if (isBreak) break
-
-                //		println("reading key in reader ${this@MapReader.hashCode()}")
-
-                val key = lendStream(CborItemReader()) {
-                    keyReadOp()
-                }
-                if (key.isNotBreak) {
-                    val v = lendStream(CborItemReader()) {
+    ): Sequence<Entry<K, V>> =
+        sequence {
+            if (hasCount) range.map {
+                val k =
+                    lendStream(CborItemReader()) {
+                        keyReadOp()
+                    }
+                val v =
+                    lendStream(CborItemReader()) {
                         valueReadOp()
                     }
-                    yield(Entry(key = key, value = v))
-                }
+                yield(Entry(key = k, value = v))
+            } else {
+                do {
 
-            } while (key.isNotBreak)
+                    val key =
+                        lendStream(CborItemReader()) {
+                            keyReadOp()
+                        }
+                    if (key.isNotBreak) {
+                        val v =
+                            lendStream(CborItemReader()) {
+                                valueReadOp()
+                            }
+                        yield(Entry(key = key, value = v))
+                    }
+                } while (key.isNotBreak)
+            }
         }
-    }
 
     inline fun <reified RD : MajorTypeReader<*>, R> readEachManually(op: RD.() -> R): List<R> {
         if (!hasCount) NOT_IMPLEMENTED
