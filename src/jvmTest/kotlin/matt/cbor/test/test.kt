@@ -1,6 +1,7 @@
 package matt.cbor.test
 
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import matt.cbor.data.major.array.CborArray
 import matt.cbor.data.major.seven.CborDouble
 import matt.cbor.data.major.seven.CborFalse
@@ -16,6 +17,7 @@ import matt.test.Tests
 import kotlin.test.Test
 
 class CborTests: Tests() {
+    @OptIn(ExperimentalSerializationApi::class)
     @Test
     fun testReadUnsignedInt() {
         val int = 5

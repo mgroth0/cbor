@@ -1,7 +1,9 @@
 @file:JvmName("CborJvmAndroidKt")
+@file:OptIn(ExperimentalSerializationApi::class)
 
 package matt.cbor
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.cbor.Cbor
 import kotlinx.serialization.encodeToByteArray

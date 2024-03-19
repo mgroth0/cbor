@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalContracts::class)
+
 package matt.cbor.read
 
 import matt.cbor.log.INDENT
@@ -14,6 +16,7 @@ import matt.model.obj.info.HasInfo
 import matt.prim.byte.reasonablePrintableString
 import matt.prim.str.times
 import matt.prim.str.truncateWithElipses
+import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 

@@ -1,3 +1,4 @@
+@file:OptIn(ExperimentalSerializationApi::class)
 
 package matt.cbor
 

@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalContracts::class)
+
 package matt.cbor.read.item
 
 import matt.cbor.data.head.InitialByte
@@ -8,6 +10,7 @@ import matt.cbor.read.CborReaderTyped
 import matt.cbor.read.head.HeadReader
 import matt.cbor.read.major.MajorTypeReader
 import matt.lang.anno.SeeURL
+import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind.EXACTLY_ONCE
 import kotlin.contracts.contract
 
